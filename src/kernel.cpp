@@ -104,9 +104,8 @@ void print_42()
 ######### ##             ##  ##   ##             ##
      ##  ##              ##   ##  ##       ##    ##
      ##  #########       ##    ## ##        ###### 
-
 )";
-	printf("%s", kfs);
+	printf("%s\n", kfs);
 }
 
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)

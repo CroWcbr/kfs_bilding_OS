@@ -1,4 +1,5 @@
 #include <drivers/keyboard.h>
+#include <common/stdio.h>
 
 using namespace crowos::common;
 using namespace crowos::drivers;
@@ -118,11 +119,12 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
 		// 	printk("shift = false\n");
 		// 	shift = 0;
 		// 	break;
-		// default: //print all
-		// 	printk("KEYBOARD 0x");
-		// 	printkHex(key);
-		// 	printk("\n");
-		// 	break;
+		default: //print all
+			if (key <= 0x80)
+				printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
+			else
+				printf("\nKEYBOARD OnKeyUp 0x%X\n", key);
+			break;
 	}
 
 	return esp;
