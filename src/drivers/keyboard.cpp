@@ -119,7 +119,8 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
 		// 	printk("shift = false\n");
 		// 	shift = 0;
 		// 	break;
-		default: //print all
+
+		default: //print all for test!
 			if (key <= 0x80)
 				printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
 			else

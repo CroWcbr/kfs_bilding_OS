@@ -16,6 +16,7 @@ OBJECTS			=	obj/loader.o \
 					obj/drivers/keyboard.o \
 					obj/drivers/mouse.o \
 					obj/vga/screen.o \
+					obj/vga/screenmanager.o \
 					obj/kernel.o
 
 obj/%.o			:	src/%.cpp

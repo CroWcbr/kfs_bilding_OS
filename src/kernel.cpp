@@ -4,7 +4,7 @@
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
-#include <vga/screen.h>
+#include <vga/screenmanager.h>
 #include <common/stdio.h>
 
 using namespace crowos;
@@ -13,31 +13,24 @@ using namespace crowos::drivers;
 using namespace crowos::hardware;
 using namespace crowos::vga;
 
-// void printk(const char* str)
-// {
-// 	Screen& my_screen = Screen::getInstance();
-// 	for(int i = 0; str[i] != '\0'; ++i)
-// 		my_screen.putchar(str[i]);
-// }
-
-// void printkHex(uint8_t key)
-// {
-// 	char foo[] = "00";
-// 	char hex[] = "0123456789ABCDEF";
-// 	foo[0] = hex[(key >> 4) & 0xF];
-// 	foo[1] = hex[key & 0xF];
-// 	printk(foo);
-// }
-
 class PrintfKeyboardEventHandler : public KeyboardEventHandler
 {
 public:
 	void OnKeyDown(char c)
 	{
 		Screen& my_screen = Screen::getInstance();
-		char *foo = " ";
-		foo[0] = c;
-		my_screen.putchar(c);
+		if (c == '1')
+			my_screen.ChangeDisplay(0);
+		else if (c == '2')
+			my_screen.ChangeDisplay(1);
+		else if (c == '3')
+			my_screen.ChangeDisplay(2);
+		else
+		{
+			char *foo = " ";
+			foo[0] = c;
+			my_screen.putchar(c);
+		}
 	}
 };
 

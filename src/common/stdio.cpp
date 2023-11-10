@@ -1,6 +1,6 @@
 #include <common/stdio.h>
 #include <common/stdarg.h>
-#include <vga/screen.h>
+#include <vga/screenmanager.h>
 
 using namespace crowos::vga;
 
@@ -21,49 +21,10 @@ namespace crowos
 		#define PRINTF_LENGTH_LONG			3
 		#define PRINTF_LENGTH_LONG_LONG		4
 
-		const char g_HexChars[] = "0123456789abcdef";
-
-		static void	putc(char c)
-		{
-			Screen& my_screen = Screen::getInstance();
-			my_screen.putchar(c);
-		}
-
-		static void	puts(const char* str)
-		{
-			for(int i = 0; str[i] != '\0'; ++i)
-				putc(str[i]);
-		}
-
-		static void	printf_unsigned_long(unsigned long number, int radix)
-		{
-			char buffer[32];
-			int pos = 0;
-
-			do 
-			{
-				unsigned long rem = number % radix;
-				number /= radix;
-				buffer[pos++] = g_HexChars[rem];
-			} while (number > 0);
-
-			while (--pos >= 0)
-				putc(buffer[pos]);
-		}
-
-		static void printf_signed_long(long number, int radix)
-		{
-			if (number < 0)
-			{
-				putc('-');
-				printf_unsigned_long(-number, radix);
-			}
-			else
-				printf_unsigned_long(number, radix);
-		}
-
 		void printf(const char* fmt, ...)
 		{
+			ScreenManager& my_screen = ScreenManager::getInstance();
+
 			va_list args;
 			va_start(args, fmt);
 
@@ -84,7 +45,7 @@ namespace crowos
 								state = PRINTF_STATE_LENGTH;
 								break;
 							default:
-								putc(*fmt);
+								my_screen.putchar(*fmt);
 								break;
 						}
 						break;
@@ -130,13 +91,13 @@ namespace crowos
 						switch (*fmt)
 						{
 						case 'c':
-							putc((char)va_arg(args, int));
+							my_screen.putchar((char)va_arg(args, int));
 							break;
 						case 's':
-							puts(va_arg(args, const char*));
+							my_screen.putstr(va_arg(args, const char*));
 							break;
 						case '%':
-							putc('%');
+							my_screen.putchar('%');
 							break;
 						case 'd':
 						case 'i':
@@ -174,16 +135,15 @@ namespace crowos
 								case PRINTF_LENGTH_SHORT_SHORT:
 								case PRINTF_LENGTH_SHORT:
 								case PRINTF_LENGTH_DEFAULT:
-									printf_signed_long(va_arg(args, int), radix);
+									my_screen.printf_signed_long(va_arg(args, int), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG:
-									printf_signed_long(va_arg(args, long), radix);
+									my_screen.printf_signed_long(va_arg(args, long), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG_LONG:
-									puts("long long - don't work");
-									// printf_signed(va_arg(args, long long), radix);
+									my_screen.printf_signed_long_long(va_arg(args, long long), radix);
 									break;
 								}
 							}
@@ -194,16 +154,15 @@ namespace crowos
 								case PRINTF_LENGTH_SHORT_SHORT:
 								case PRINTF_LENGTH_SHORT:
 								case PRINTF_LENGTH_DEFAULT:
-									printf_unsigned_long(va_arg(args, unsigned int), radix);
+									my_screen.printf_unsigned_long(va_arg(args, unsigned int), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG:
-									printf_unsigned_long(va_arg(args, unsigned long), radix);
+									my_screen.printf_unsigned_long(va_arg(args, unsigned long), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG_LONG:
-									puts("unsigned long long - don't work");
-									// printf_unsigned(va_arg(args, unsigned long long), radix);
+									my_screen.printf_unsigned_long_long(va_arg(args, unsigned long long), radix);
 									break;
 								}
 							}

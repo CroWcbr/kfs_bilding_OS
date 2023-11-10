@@ -3,21 +3,6 @@
 using namespace crowos::vga;
 using namespace crowos::common;
 
-// Screen::Screen()
-// : VideoMemory((uint16_t*)0xb8000)
-// {
-// 	clearDisplayBuffer(VideoMemory);
-// 	for (int i = 0; i < MAX_SCREEN; ++i)
-// 	{
-// 		screens[i].x = 0;
-// 		screens[i].y = 0;
-// 		screens[i].cursor_position = 0;
-// 		clearDisplayBuffer(screens[i].display_buffer);
-// 		clearDataBuffer(screens[i].data_buffer);
-// 	}
-// 	active_screen = &screens[0];
-// }
-
 Screen& Screen::getInstance()
 {
 	static Screen instance;
@@ -31,8 +16,9 @@ Screen& Screen::getInstance()
 			instance.screens[i].x = 0;
 			instance.screens[i].y = 0;
 			instance.screens[i].cursor_position = 0;
-			instance.clearDisplayBuffer(instance.screens[i].display_buffer);
-			instance.clearDataBuffer(instance.screens[i].data_buffer);
+			instance.copyFromTo(instance.VideoMemory, instance.screens[i].display_buffer);
+			instance.screens[i].buffer_size = 0;
+			// instance.clearDataBuffer(instance.screens[i].data_buffer);
 		}
 		instance.active_screen = &(instance.screens[0]);
 		initialized = true;
@@ -46,17 +32,29 @@ void Screen::clearDisplayBuffer(uint16_t *data)
 		data[i] = (data[i] & 0xFF00) | ' ';
 }
 
-void Screen::clearDataBuffer(uint8_t *data)
+void Screen::copyFromTo(uint16_t *from, uint16_t *to)
 {
 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
-		data[i] = 0;
+		to[i] = from[i];
 }
 
-// // void Screen::ActivateDisplay()
-// // {
-// // 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
-// // 		VideoMemory[i] = data_buffer[active_screen][i];
-// // }
+// void Screen::clearDataBuffer(uint8_t *data)
+// {
+// 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
+// 		data[i] = 0;
+// }
+
+void	Screen::ChangeDisplay(uint8_t n)
+{
+	if (n > MAX_SCREEN || active_screen == &screens[n])
+		return ;
+
+	copyFromTo(VideoMemory, active_screen->display_buffer);
+	active_screen = &screens[n];
+	copyFromTo(active_screen->display_buffer, VideoMemory);
+
+	put_cursor_at();
+}
 
 void	Screen::putchar(char c)
 {
@@ -65,10 +63,33 @@ void	Screen::putchar(char c)
 		case '\n':
 			active_screen->y++;
 			active_screen->x = 0;
+			active_screen->cursor_position = 80 * active_screen->y + active_screen->x;
+			active_screen->buffer_size = 0;
+			break;
+		case '\b':
+			if(active_screen->cursor_position && active_screen->buffer_size)
+			{
+				active_screen->cursor_position--;
+				active_screen->buffer_size--;
+				VideoMemory[active_screen->cursor_position] = (VideoMemory[active_screen->cursor_position] & 0xFF00) | ' ';
+				if (active_screen->y && active_screen->x == 0)
+				{
+					active_screen->y--;
+					active_screen->x = 79;
+				}
+				else if(active_screen->x)
+					active_screen->x--;
+			}
+			break;
+		case '\t':
+			for(int i = 0, pos = 4 - active_screen->x % 4; i < pos ; ++i)
+				putchar(' ');
 			break;
 		default:
 			VideoMemory[active_screen->cursor_position] = (VideoMemory[active_screen->cursor_position] & 0xFF00) | c;
 			active_screen->x++;
+			active_screen->cursor_position++;
+			active_screen->buffer_size++;
 			break;
 	}
 
@@ -87,8 +108,10 @@ void	Screen::putchar(char c)
 		for (int i = WIDTH * row; i < WIDTH * HEIGHT; ++i)
 			VideoMemory[i] = (VideoMemory[i] & 0xFF00) | ' ';
 		active_screen->y = row;
+		active_screen->cursor_position = 80 * active_screen->y + active_screen->x;
+		if (active_screen->cursor_position < active_screen->buffer_size)
+			active_screen->buffer_size = active_screen->cursor_position;
 	}
-	active_screen->cursor_position = 80 * active_screen->y + active_screen->x;
 	put_cursor_at();
 }
 
