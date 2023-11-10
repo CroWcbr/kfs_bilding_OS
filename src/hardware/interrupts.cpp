@@ -1,10 +1,8 @@
 #include <hardware/interrupts.h>
+#include <common/stdio.h>
 
 using namespace crowos::common;
 using namespace crowos::hardware;
-
-void printk(const char* str);
-void printkHex(uint8_t key);
 
 InterruptHandler::InterruptHandler(uint8_t interruptNumber, InterruptManager* interruptManager)
 {
@@ -121,9 +119,7 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 	}
 	else if (interruptNumber != 0x20)
 	{
-		printk("UNHANDLER INTERRUPT 0x");
-		printkHex(interruptNumber);
-		printk("\n");
+		printf("UNHANDLER INTERRUPT 0x%p\n", interruptNumber);
 	}
 
 

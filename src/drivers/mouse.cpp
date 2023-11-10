@@ -53,9 +53,6 @@ void MouseDriver::Activate()
 	dataport.Read();
 }
 
-void printk(const char* str);
-void printkHex(uint8_t key);
-
 uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
 {
 	uint8_t status = commandport.Read();

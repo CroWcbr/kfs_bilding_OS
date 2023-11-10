@@ -8,6 +8,7 @@ LDPARAMS		=	-m elf_i386
 
 OBJECTS			=	obj/loader.o \
 					obj/gdt.o \
+					obj/common/stdio.o \
 					obj/drivers/driver.o \
 					obj/hardware/port.o \
 					obj/hardware/interruptstubs.o \

@@ -19,8 +19,8 @@ namespace crowos
 			{
 				crowos::common::uint8_t		x;
 				crowos::common::uint8_t		y;
-				crowos::common::uint16_t	display_buffer[WIDTH * HEIGHT];
 				crowos::common::int16_t		cursor_position;
+				crowos::common::uint16_t	display_buffer[WIDTH * HEIGHT];
 				crowos::common::uint8_t		data_buffer[MAX_BUFFER];
 			};
 

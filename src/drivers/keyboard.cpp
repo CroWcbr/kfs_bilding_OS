@@ -27,9 +27,6 @@ KeyboardDriver::KeyboardDriver(InterruptManager* manager, KeyboardEventHandler *
 	this->handler = handler;
 }
 
-void printk(const char* str);
-void printkHex(uint8_t key);
-
 void KeyboardDriver::Activate()
 {
 	while(commandport.Read() & 0x1)

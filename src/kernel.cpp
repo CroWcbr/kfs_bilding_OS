@@ -5,6 +5,7 @@
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 #include <vga/screen.h>
+#include <common/stdio.h>
 
 using namespace crowos;
 using namespace crowos::common;
@@ -12,89 +13,31 @@ using namespace crowos::drivers;
 using namespace crowos::hardware;
 using namespace crowos::vga;
 
-void port_byte_out(uint16_t port, uint8_t data)
-{
-	asm volatile ("outb %0, %1" :: "a"(data), "Nd"(port));
-}
-
-// void port_byte_out(uint16 port, uint8 value)
+// void printk(const char* str)
 // {
-//     asm volatile ("outb %1, %0" : : "dN" (port), "a" (value));
+// 	Screen& my_screen = Screen::getInstance();
+// 	for(int i = 0; str[i] != '\0'; ++i)
+// 		my_screen.putchar(str[i]);
 // }
 
-#define low_8(address) (uint8_t)((address) & 0xFF)
-#define high_8(address) (uint8_t)(((address) >> 8) & 0xFF)
-void put_cursor_at(int idx)
-{
-	port_byte_out(0x3d4, 0xe);
-	port_byte_out(0x3d5, high_8(idx));
-	port_byte_out(0x3d4, 0xf);
-	port_byte_out(0x3d5, low_8(idx));
-}
-
-void printk2(const char* str)
-{
-	static uint16_t* VideoMemory = (uint16_t*)0xb8000;
-
-	static uint8_t x = 0;
-	static uint8_t y = 0;
-
-	for(int i = 0; str[i] != '\0'; ++i)
-	{
-		switch(str[i])
-		{
-			case '\n':
-				y++;
-				x = 0;
-				// put_cursor_at(80 * y + x);
-				break;
-			default:
-				VideoMemory[80 * y + x] = (VideoMemory[80 * y + x] & 0xFF00) | str[i];
-				x++;
-				// put_cursor_at(80 * y + x);
-				break;
-		}
-		if (x >= 80)
-		{
-			y++;
-			x = 0;
-		}
-		if (y>= 25)
-		{
-			for (int i = 0; i < 80 * 25; ++i)
-				VideoMemory[i] = (VideoMemory[i] & 0xFF00) | ' ';
-			x = 0;
-			y = 0;
-		}
-	}
-}
-
-void printk(const char* str)
-{
-	// static Screen my_screen;
-	Screen& my_screen = Screen::getInstance();
-	for(int i = 0; str[i] != '\0'; ++i)
-		my_screen.putchar(str[i]);
-	// printk2(str);
-}
-
-void printkHex(uint8_t key)
-{
-	char foo[] = "00";
-	char hex[] = "0123456789ABCDEF";
-	foo[0] = hex[(key >> 4) & 0xF];
-	foo[1] = hex[key & 0xF];
-	printk(foo);
-}
+// void printkHex(uint8_t key)
+// {
+// 	char foo[] = "00";
+// 	char hex[] = "0123456789ABCDEF";
+// 	foo[0] = hex[(key >> 4) & 0xF];
+// 	foo[1] = hex[key & 0xF];
+// 	printk(foo);
+// }
 
 class PrintfKeyboardEventHandler : public KeyboardEventHandler
 {
 public:
 	void OnKeyDown(char c)
 	{
+		Screen& my_screen = Screen::getInstance();
 		char *foo = " ";
 		foo[0] = c;
-		printk(foo);
+		my_screen.putchar(c);
 	}
 };
 
@@ -151,9 +94,24 @@ extern "C" void callConstructors()
 		(*i)();
 }
 
+void print_42()
+{
+	const char *kfs = R"(
+##         #######       ##    ## ########  ###### 
+##    ##  ##     ##      ##   ##  ##       ##    ##
+##    ##         ##      ##  ##   ##       ##      
+##    ##   #######       #####    ######    ###### 
+######### ##             ##  ##   ##             ##
+     ##  ##              ##   ##  ##       ##    ##
+     ##  #########       ##    ## ##        ###### 
+
+)";
+	printf("%s", kfs);
+}
+
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 {
-	printk("Hello World!\n");
+	print_42();
 
 	GlobalDescriptorTable gdt;
 	InterruptManager interrupts(&gdt);
