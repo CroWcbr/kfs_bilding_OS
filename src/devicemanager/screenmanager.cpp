@@ -1,6 +1,8 @@
-#include <vga/screenmanager.h>
+#include <devicemanager/screenmanager.h>
 
 using namespace crowos::vga;
+using namespace crowos::devicemanager;
+using namespace crowos::common;
 
 ScreenManager& ScreenManager::getInstance()
 {
@@ -12,6 +14,11 @@ ScreenManager& ScreenManager::getInstance()
 		initialized = true;
 	}
 	return instance;
+}
+
+void	ScreenManager::ChangeDisplay(uint8_t n)
+{
+	my_screen->ChangeDisplay(n);
 }
 
 void	ScreenManager::putchar(char c)

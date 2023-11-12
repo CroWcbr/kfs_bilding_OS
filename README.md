@@ -9,12 +9,6 @@
 - Handle keyboard entries and print them.
 - Handle different screens, and keyboard shortcuts to switch easily between then.
 
-## Problems
-- problems with 64 bit arithmetic
-```
-there is no standart function in gcc - "__udivdi3" and "__umoddi3" 
-```
-
 ## Sources
 - materials
 ```

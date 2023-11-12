@@ -2,7 +2,7 @@
 CC				=	gcc
 CFLAGS			=	-m32 -Iinclude -fno-builtin -fno-exceptions -fno-stack-protector -fno-rtti -nostdlib -nodefaultlibs -fno-use-cxa-atexit \
 									-fno-leading-underscore -Wno-write-strings
-									
+
 ASPARAMS		=	--32
 LDPARAMS		=	-m elf_i386
 
@@ -16,7 +16,9 @@ OBJECTS			=	obj/loader.o \
 					obj/drivers/keyboard.o \
 					obj/drivers/mouse.o \
 					obj/vga/screen.o \
-					obj/vga/screenmanager.o \
+					obj/devicemanager/screenmanager.o \
+					obj/devicemanager/keyboardmanager.o \
+					obj/devicemanager/mousemanager.o \
 					obj/kernel.o
 
 obj/%.o			:	src/%.cpp
@@ -52,7 +54,13 @@ mykernel.iso	:	mykernel.bin
 run				:	mykernel.iso
 					qemu-system-i386 -cdrom mykernel.iso
 
-.PHONY: clean
-
 clean			:
 					rm -rf obj mykernel.bin mykernel.iso
+
+help			:
+					@echo "Available targets:"
+					@echo "  run     - Run OS inside qemu emulator"
+					@echo "  install - Install OS into boot section"
+					@echo "  clean   - Remove obj files"
+
+.PHONY			:	clean run install help

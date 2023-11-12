@@ -20,9 +20,9 @@ _ZN6crowos8hardware16InterruptManager26HandleInterruptRequest\num\()Ev:
 	jmp int_bottom
 .endm
 
-HandleInterruptRequest 0x00
-HandleInterruptRequest 0x01
-HandleInterruptRequest 0x0C
+HandleInterruptRequest 0x00			# Timer
+HandleInterruptRequest 0x01			# Keyboard
+HandleInterruptRequest 0x0C			# Mouse
 
 int_bottom:
 	pusha

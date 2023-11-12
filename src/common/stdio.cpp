@@ -1,8 +1,8 @@
 #include <common/stdio.h>
 #include <common/stdarg.h>
-#include <vga/screenmanager.h>
+#include <devicemanager/screenmanager.h>
 
-using namespace crowos::vga;
+using namespace crowos::devicemanager;
 
 namespace crowos
 {
