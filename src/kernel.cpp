@@ -45,8 +45,6 @@ void print_42()
       ##  #########    ##    ## ##        ######  
 
 )";
-	// printf("%s\n", kfs);
-
 	for (int i = 0; kfs[i]; ++i)
 	{
 		if (kfs[i] == ' ' || kfs[i] == '\n')
@@ -58,16 +56,17 @@ void print_42()
 
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 {
-	print_42();
+	// print_42();
 
 	GlobalDescriptorTable gdt;
+printf("GDT: %p\n", &gdt);
 	InterruptManager interrupts(&gdt);
 
 	DriverManager drvManager;
 
-	MouseToConsole mousehandler;
-	MouseDriver mouse(&interrupts, &mousehandler);
-	drvManager.AddDriver(&mouse);
+// 	MouseToConsole mousehandler;
+// 	MouseDriver mouse(&interrupts, &mousehandler);
+// 	drvManager.AddDriver(&mouse);
 
 	PrintfKeyboardEventHandler kbhandler;
 	KeyboardDriver keyboard(&interrupts, &kbhandler);
@@ -75,6 +74,27 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 
 	drvManager.ActivateAll();
 	interrupts.Activate();
+
+// uint8_t* test = (uint8_t*)(&gdt);
+// int numBytes = 32;
+
+// printf("%p\n", test);
+// for (int i = 0; i < numBytes; ++i) {
+// 	printf("0x%p ", test[i]);
+// 	if (i != 0 && (i + 1) % 8 == 0)
+// 		printf("\n");
+// }
+// printf("\n");
+
+// test = (uint8_t*)(0x800);
+
+// printf("%p\n", test);
+// for (int i = 0; i < numBytes; ++i) {
+// 	printf("0x%p ", test[i]);
+// 	if (i != 0 && (i + 1) % 8 == 0)
+// 		printf("\n");
+// }
+// printf("\n");
 
 	while(1)
 		;

@@ -9,6 +9,11 @@
 - Handle keyboard entries and print them.
 - Handle different screens, and keyboard shortcuts to switch easily between then.
 
+## kfs-2
+- create a Global Descriptor Table and set GDT at address 0x00000800
+#### Bonus
+- simple Shell (reboot, halt, printstack)
+
 ## Sources
 - materials
 ```
