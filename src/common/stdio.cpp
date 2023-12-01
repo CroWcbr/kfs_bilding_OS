@@ -21,10 +21,107 @@ namespace crowos
 		#define PRINTF_LENGTH_LONG			3
 		#define PRINTF_LENGTH_LONG_LONG		4
 
-		void printf(const char* fmt, ...)
+		#define HEX_CHARS "0123456789abcdef"
+
+		static void	putchar(char c)
 		{
 			ScreenManager& my_screen = ScreenManager::getInstance();
 
+			my_screen.putchar(c);
+		}
+
+		static void	putstr(const char* str)
+		{
+			ScreenManager& my_screen = ScreenManager::getInstance();
+
+			for(int i = 0; str[i] != '\0'; ++i)
+				my_screen.putchar(str[i]);
+		}
+
+		static void	printf_unsigned_long(unsigned long number, int radix)
+		{
+			ScreenManager& my_screen = ScreenManager::getInstance();
+
+			char buffer[32];
+			int pos = 0;
+
+			do
+			{
+				unsigned long rem = number % radix;
+				number /= radix;
+				buffer[pos++] = HEX_CHARS[rem];
+			} while (number > 0);
+
+			while (--pos >= 0)
+				my_screen.putchar(buffer[pos]);
+		}
+
+		static void	printf_signed_long(long number, int radix)
+		{
+			if (number < 0)
+			{
+				putchar('-');
+				printf_unsigned_long(-number, radix);
+			}
+			else
+				printf_unsigned_long(number, radix);
+		}
+
+		static unsigned long long	custom_divide_64bit(unsigned long long numerator, int denominator, int *remainder)
+		{
+			unsigned long long quotient = 0;
+			int temp = 0;
+
+			for (int i = 63; i >= 0; i--)
+			{
+				temp = (temp << 1) | ((numerator >> i) & 1);
+				if (temp >= denominator) {
+					temp -= denominator;
+					quotient = (quotient << 1) | 1;
+				} 
+				else
+					quotient <<= 1;
+			}
+
+			if (remainder)
+				*remainder = temp;
+
+			return quotient;
+		}
+
+		static void	printf_unsigned_long_long(unsigned long long number, int radix)
+		{
+			ScreenManager& my_screen = ScreenManager::getInstance();
+
+			char buffer[64];
+			int pos = 0;
+
+			do 
+			{
+				int rem;
+				unsigned long long tmp = custom_divide_64bit(number, radix, &rem);
+				buffer[pos++] = HEX_CHARS[rem];
+				number = tmp;
+			} while (number > 0);
+
+			while (--pos >= 0)
+				my_screen.putchar(buffer[pos]);
+		}
+
+		static void	printf_signed_long_long(long long number, int radix)
+		{
+			if (number < 0)
+			{
+				putchar('-');
+				printf_unsigned_long_long(-number, radix);
+			}
+			else
+				printf_unsigned_long_long(number, radix);
+		}
+
+
+		void	printf(const char* fmt, ...)
+		{
 			va_list args;
 			va_start(args, fmt);
 
@@ -45,7 +142,7 @@ namespace crowos
 								state = PRINTF_STATE_LENGTH;
 								break;
 							default:
-								my_screen.putchar(*fmt);
+								putchar(*fmt);
 								break;
 						}
 						break;
@@ -91,13 +188,13 @@ namespace crowos
 						switch (*fmt)
 						{
 						case 'c':
-							my_screen.putchar((char)va_arg(args, int));
+							putchar((char)va_arg(args, int));
 							break;
 						case 's':
-							my_screen.putstr(va_arg(args, const char*));
+							putstr(va_arg(args, const char*));
 							break;
 						case '%':
-							my_screen.putchar('%');
+							putchar('%');
 							break;
 						case 'd':
 						case 'i':
@@ -135,15 +232,15 @@ namespace crowos
 								case PRINTF_LENGTH_SHORT_SHORT:
 								case PRINTF_LENGTH_SHORT:
 								case PRINTF_LENGTH_DEFAULT:
-									my_screen.printf_signed_long(va_arg(args, int), radix);
+									printf_signed_long(va_arg(args, int), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG:
-									my_screen.printf_signed_long(va_arg(args, long), radix);
+									printf_signed_long(va_arg(args, long), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG_LONG:
-									my_screen.printf_signed_long_long(va_arg(args, long long), radix);
+									printf_signed_long_long(va_arg(args, long long), radix);
 									break;
 								}
 							}
@@ -154,15 +251,15 @@ namespace crowos
 								case PRINTF_LENGTH_SHORT_SHORT:
 								case PRINTF_LENGTH_SHORT:
 								case PRINTF_LENGTH_DEFAULT:
-									my_screen.printf_unsigned_long(va_arg(args, unsigned int), radix);
+									printf_unsigned_long(va_arg(args, unsigned int), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG:
-									my_screen.printf_unsigned_long(va_arg(args, unsigned long), radix);
+									printf_unsigned_long(va_arg(args, unsigned long), radix);
 									break;
 
 								case PRINTF_LENGTH_LONG_LONG:
-									my_screen.printf_unsigned_long_long(va_arg(args, unsigned long long), radix);
+									printf_unsigned_long_long(va_arg(args, unsigned long long), radix);
 									break;
 								}
 							}

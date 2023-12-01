@@ -17,12 +17,12 @@ Screen& Screen::getInstance()
 		instance.screens[0].text_color = Color::WHITE;
 		instance.screens[0].back_color = Color::BLACK;
 		instance.screens[0].promt_color = Color::GREEN;
-		instance.screens[1].text_color = Color::GREEN;
+		instance.screens[1].text_color = Color::DARK_GRAY;
 		instance.screens[1].back_color = Color::BLUE;
-		instance.screens[1].promt_color = Color::BLACK;
-		instance.screens[2].text_color = Color::RED;
+		instance.screens[1].promt_color = Color::WHITE;
+		instance.screens[2].text_color = Color::LIGHT_CYAN;
 		instance.screens[2].back_color = Color::DARK_GRAY;
-		instance.screens[2].promt_color = Color::BROWN;
+		instance.screens[2].promt_color = Color::GREEN;
 
 		for (int i = 0; i < MAX_SCREEN; ++i)
 		{
@@ -64,7 +64,10 @@ void	Screen::ChangeDisplay(uint8_t n)
 	copyFromTo(active_screen->display_buffer, VideoMemory);
 	s_text_color = active_screen->text_color;
 	s_back_color = active_screen->back_color;
-	put_cursor_at();
+	if (active_screen->x == 0 && active_screen->buffer_size == 0)
+		print_shell_promt();
+	else
+		put_cursor_at();
 }
 
 void	Screen::putchar(char c, uint8_t text_color, uint8_t back_color)

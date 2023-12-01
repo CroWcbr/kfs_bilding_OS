@@ -12,7 +12,6 @@ using namespace crowos;
 using namespace crowos::common;
 using namespace crowos::drivers;
 using namespace crowos::hardware;
-using namespace crowos::vga;
 using namespace crowos::devicemanager;
 
 typedef void (*constructor)();
