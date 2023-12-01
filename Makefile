@@ -19,7 +19,10 @@ OBJECTS			=	obj/loader.o \
 					obj/devicemanager/screenmanager.o \
 					obj/devicemanager/keyboardmanager.o \
 					obj/devicemanager/mousemanager.o \
-					obj/kernel.o
+					obj/kernel.o \
+					obj/common/print_stack.o \
+					obj/common/print_shell_promt.o \
+					obj/common/print_42.o
 
 obj/%.o			:	src/%.cpp
 					mkdir -p $(@D)

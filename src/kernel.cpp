@@ -4,7 +4,6 @@
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
-#include <devicemanager/screenmanager.h>
 #include <devicemanager/keyboardmanager.h>
 #include <devicemanager/mousemanager.h>
 #include <common/stdio.h>
@@ -25,48 +24,21 @@ extern "C" void callConstructors()
 		(*i)();
 }
 
-static unsigned int my_rand()
-{
-	static unsigned int my_rand_seed = 42;
-	my_rand_seed = my_rand_seed * 1103515245  + 12345;
-	return my_rand_seed % 16;
-}
-
-void print_42()
-{
-	Screen& my_screen = Screen::getInstance();
-	const char *kfs = R"(
-##         #######     ##    ## ########  ######  
-##    ##  ##     ##    ##   ##  ##       ##    ## 
-##    ##         ##    ##  ##   ##       ##       
-##    ##   #######     #####    ######    ######  
-######### ##           ##  ##   ##             ## 
-      ##  ##           ##   ##  ##       ##    ## 
-      ##  #########    ##    ## ##        ######  
-
-)";
-	for (int i = 0; kfs[i]; ++i)
-	{
-		if (kfs[i] == ' ' || kfs[i] == '\n')
-			my_screen.putchar(kfs[i]);
-		else
-			my_screen.putchar(' ', 0, my_rand());
-	}
-}
-
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 {
+// kfs-1 demonstration
 	// print_42();
+	// printf("%s : %d", "this is ", 5);
 
 	GlobalDescriptorTable gdt;
-printf("GDT: %p\n", &gdt);
 	InterruptManager interrupts(&gdt);
 
 	DriverManager drvManager;
 
-// 	MouseToConsole mousehandler;
-// 	MouseDriver mouse(&interrupts, &mousehandler);
-// 	drvManager.AddDriver(&mouse);
+// for myself (problem with change screen, multiple cursor - need use class screen for print)
+	// MouseToConsole mousehandler;
+	// MouseDriver mouse(&interrupts, &mousehandler);
+	// drvManager.AddDriver(&mouse);
 
 	PrintfKeyboardEventHandler kbhandler;
 	KeyboardDriver keyboard(&interrupts, &kbhandler);
@@ -75,27 +47,12 @@ printf("GDT: %p\n", &gdt);
 	drvManager.ActivateAll();
 	interrupts.Activate();
 
-// uint8_t* test = (uint8_t*)(&gdt);
-// int numBytes = 32;
+// kfs-2 demonstration
+	// print_stack();
+	// print_stack((void*)0x800);
+	// print_stack((void*)&gdt);
 
-// printf("%p\n", test);
-// for (int i = 0; i < numBytes; ++i) {
-// 	printf("0x%p ", test[i]);
-// 	if (i != 0 && (i + 1) % 8 == 0)
-// 		printf("\n");
-// }
-// printf("\n");
-
-// test = (uint8_t*)(0x800);
-
-// printf("%p\n", test);
-// for (int i = 0; i < numBytes; ++i) {
-// 	printf("0x%p ", test[i]);
-// 	if (i != 0 && (i + 1) % 8 == 0)
-// 		printf("\n");
-// }
-// printf("\n");
-
+	print_shell_promt();
 	while(1)
 		;
 }

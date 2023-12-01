@@ -1,5 +1,4 @@
 #include <gdt.h>
-#include <common/stdio.h>
 
 using namespace crowos;
 using namespace crowos::common;
@@ -12,24 +11,15 @@ GlobalDescriptorTable::GlobalDescriptorTable()
 {
 	uint32_t i[2];
 	// i[1] = (uint32_t)this;
-	i[1] = (uint32_t)0x800;
+	i[1] = (uint32_t)GDT_ADRESS;
 	i[0] = sizeof(GlobalDescriptorTable) << 16;
 
 	uint8_t* src = reinterpret_cast<uint8_t*>(this);
-	uint8_t* dest = reinterpret_cast<uint8_t*>(0x800);
+	uint8_t* dest = reinterpret_cast<uint8_t*>(GDT_ADRESS);
 	for (int i = 0; i < 32; ++i)
 		dest[i] = src[i];
 
 	asm volatile("lgdt (%0)": :"p" (((uint8_t *)i) + 2));
-
-	printf("GlobalDescriptorTable: %p\n", this);
-	printf("nullSegmentSelector: %p\n", &nullSegmentSelector);
-	printf("unusedSegmentSelector: %p\n", &unusedSegmentSelector);
-	printf("codeSegmentSelector: %p\n", &codeSegmentSelector);
-	printf("dataSegmentSelector: %p\n", &dataSegmentSelector);
-
-	printf("CodeSegmentSelector: %hd\n", (uint8_t *)&codeSegmentSelector - (uint8_t *)this);
-	printf("DataSegmentSelector: %hd\n", (uint8_t *)&dataSegmentSelector - (uint8_t *)this);
 }
 
 GlobalDescriptorTable::~GlobalDescriptorTable()

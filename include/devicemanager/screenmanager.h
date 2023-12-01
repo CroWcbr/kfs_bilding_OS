@@ -8,7 +8,7 @@ namespace crowos
 {
 	namespace devicemanager
 	{
-		const char g_HexChars[] = "0123456789abcdef";
+		#define HEX_CHARS "0123456789abcdef"
 
 		class ScreenManager
 		{
@@ -21,6 +21,8 @@ namespace crowos
 		public:
 			static ScreenManager&	getInstance();
 
+			void			put_color_char(char c, crowos::common::uint8_t text_color, crowos::common::uint8_t back_color);
+			void			put_color_char(char c, crowos::common::uint8_t text_color);
 			void			putchar(char c);
 			void			putstr(const char* str);
 			void			printf_unsigned_long(unsigned long number, int radix);
@@ -29,6 +31,8 @@ namespace crowos
 			void			printf_signed_long_long(long long number, int radix);
 
 			void			ChangeDisplay(crowos::common::uint8_t n);
+
+			void			print_shell_promt();
 		};
 
 	}

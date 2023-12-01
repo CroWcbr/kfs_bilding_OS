@@ -21,6 +21,16 @@ void	ScreenManager::ChangeDisplay(uint8_t n)
 	my_screen->ChangeDisplay(n);
 }
 
+void	ScreenManager::put_color_char(char c, uint8_t text_color, uint8_t back_color)
+{
+	my_screen->putchar(c, text_color, back_color);
+}
+
+void	ScreenManager::put_color_char(char c, uint8_t text_color)
+{
+	my_screen->putchar(c, text_color);
+}
+
 void	ScreenManager::putchar(char c)
 {
 	my_screen->putchar(c);
@@ -41,7 +51,7 @@ void	ScreenManager::printf_unsigned_long(unsigned long number, int radix)
 	{
 		unsigned long rem = number % radix;
 		number /= radix;
-		buffer[pos++] = g_HexChars[rem];
+		buffer[pos++] = HEX_CHARS[rem];
 	} while (number > 0);
 
 	while (--pos >= 0)
@@ -90,7 +100,7 @@ void	ScreenManager::printf_unsigned_long_long(unsigned long long number, int rad
 	{
 		int rem;
 		unsigned long long tmp = custom_divide_64bit(number, radix, &rem);
-		buffer[pos++] = g_HexChars[rem];
+		buffer[pos++] = HEX_CHARS[rem];
 		number = tmp;
 	} while (number > 0);
 
@@ -107,4 +117,9 @@ void	ScreenManager::printf_signed_long_long(long long number, int radix)
 	}
 	else
 		printf_unsigned_long_long(number, radix);
+}
+
+void	ScreenManager::print_shell_promt()
+{
+	my_screen->print_shell_promt();
 }

@@ -13,12 +13,17 @@ Screen& Screen::getInstance()
 	if (!initialized)
 	{
 		instance.VideoMemory = (uint16_t*)0xb8000;
+
 		instance.screens[0].text_color = Color::WHITE;
 		instance.screens[0].back_color = Color::BLACK;
+		instance.screens[0].promt_color = Color::GREEN;
 		instance.screens[1].text_color = Color::GREEN;
 		instance.screens[1].back_color = Color::BLUE;
+		instance.screens[1].promt_color = Color::BLACK;
 		instance.screens[2].text_color = Color::RED;
 		instance.screens[2].back_color = Color::DARK_GRAY;
+		instance.screens[2].promt_color = Color::BROWN;
+
 		for (int i = 0; i < MAX_SCREEN; ++i)
 		{
 			instance.screens[i].x = 0;
@@ -165,4 +170,15 @@ void Screen::put_cursor_at()
 	port_byte_out(0x3d5, active_screen->cursor_position >> 8);
 	port_byte_out(0x3d4, 0xf);
 	port_byte_out(0x3d5, active_screen->cursor_position);
+}
+
+void Screen::print_shell_promt()
+{
+	for (int i = 0; PROMT_TEXT[i]; ++i)
+	{
+		put_color_char(PROMT_TEXT[i], active_screen->cursor_position, active_screen->promt_color, active_screen->back_color);
+		active_screen->x++;
+		active_screen->cursor_position++;
+	}
+	put_cursor_at();
 }

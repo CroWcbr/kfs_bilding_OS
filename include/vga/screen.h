@@ -31,6 +31,7 @@ namespace crowos
 		#define HEIGHT			25
 		#define MAX_BUFFER		200
 		#define MAX_SCREEN		3
+		#define PROMT_TEXT		"CroW@kfs> "
 
 		class Screen
 		{
@@ -44,6 +45,7 @@ namespace crowos
 				crowos::common::int16_t		buffer_size;
 				crowos::common::uint8_t		text_color;
 				crowos::common::uint8_t		back_color;
+				crowos::common::uint8_t		promt_color;
 			};
 
 		protected:
@@ -77,6 +79,8 @@ namespace crowos
 			void			putchar(char c,
 									crowos::common::uint8_t text_color = s_text_color,
 									crowos::common::uint8_t back_color = s_back_color);
+			
+			void			print_shell_promt();
 		};
 
 	}

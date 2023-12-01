@@ -3,6 +3,8 @@
 
 #include <common/types.h>
 
+#define GDT_ADRESS 0x00000800
+
 namespace crowos
 {
 	class GlobalDescriptorTable
