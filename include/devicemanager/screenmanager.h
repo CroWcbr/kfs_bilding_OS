@@ -22,6 +22,8 @@ namespace crowos
 			void			putchar(char c);
 			void			put_color_char(char c, crowos::common::uint8_t text_color, crowos::common::uint8_t back_color);
 			void			put_color_char(char c, crowos::common::uint8_t text_color);
+
+			void			check_command();
 		};
 
 	}

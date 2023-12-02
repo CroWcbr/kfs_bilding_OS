@@ -52,7 +52,8 @@ void PrintfKeyboardEventHandler::OnKeyDown(char key)
 		case 0x1B: my_screen->putchar(']'); break;
 		case 0x2B: my_screen->putchar('\\'); break;
 		case 0x1C: //enter
-			my_screen->putchar('\n');
+			my_screen->check_command();
+			// my_screen->putchar('\n');
 			//check command? i think here....
 			my_screen->print_shell_promt();
 			break;

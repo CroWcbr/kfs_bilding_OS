@@ -185,3 +185,16 @@ void Screen::print_shell_promt()
 	}
 	put_cursor_at();
 }
+
+bool	Screen::get_buffer(char *command)
+{
+	if (active_screen->buffer_size > 10)
+		return false;
+
+	int pos = active_screen->cursor_position - active_screen->buffer_size;
+	int i = 0;
+	for(; i < active_screen->buffer_size; ++i)
+		command[i] = (uint8_t)VideoMemory[pos + i];
+	command[i] = 0;
+	return true;
+}

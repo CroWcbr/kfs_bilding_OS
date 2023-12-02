@@ -81,6 +81,8 @@ namespace crowos
 									crowos::common::uint8_t back_color = s_back_color);
 			
 			void			print_shell_promt();
+
+			bool			get_buffer(char *command);
 		};
 
 	}
