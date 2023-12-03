@@ -47,10 +47,10 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 	interrupts.Activate();
 
 // kfs-2 demonstration
-	// print_stack();
+	// print_stack((void*)0);
 	// print_stack((void*)0x800);
 	// print_stack((void*)&gdt);
-
+	print_stack((void*)0x1);
 	print_shell_promt();
 	while(1)
 		;

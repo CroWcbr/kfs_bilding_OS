@@ -1,13 +1,6 @@
 # My own Operating System
 
-## ToDo now kfs-2
-- add class shell (I need simple class Shell inside class ScreenManager)
-- add reboot command (finished)
-- add halt command (finished)
-- add printstack command (finished)
-- add shutdown command (finished)
-
-## kfs-1 (finished)
+## kfs-1 - Grub, boot and screen (finished)
 - make a kernel, bootable with GRUB, who can write characters on screen
 #### Bonus
 - Add scroll and cursor support to your I/O interface.
@@ -16,15 +9,18 @@
 - Handle keyboard entries and print them.
 - Handle different screens, and keyboard shortcuts to switch easily between then.
 
-## kfs-2 (bonus in progress)
+## kfs-2 - GDT & Stack (finished)
 - create a Global Descriptor Table and set GDT at address 0x00000800
 #### Bonus
-- simple Shell (reboot, halt, printstack, shutdown)
+- simple Shell (reboot, halt, stack, shutdown)
+```
+stupid realization.... I add class Shell in future....
+```
 
-## kfs-3
+## kfs-3 - Memory
 - in plans
 
-## kfs-4
+## kfs-4 - Interrupts
 - in plans
 
 ## Sources
