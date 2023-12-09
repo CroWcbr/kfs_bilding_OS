@@ -109,6 +109,15 @@ Good style :
 			__asm__ ("hlt");
 			__asm__ ("int $0x3");
 		}
+		else if (command[0] == 'c' && \
+				command[1] == 'l' && \
+				command[2] == 'e' && \
+				command[3] == 'a' && \
+				command[4] == 'r' && \
+				command[5] == 0)
+		{
+			my_screen->clear();
+		}
 	}
 	else
 		putchar('\n');

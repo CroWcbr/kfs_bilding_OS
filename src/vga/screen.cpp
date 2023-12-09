@@ -198,3 +198,13 @@ bool	Screen::get_buffer(char *command)
 	command[i] = 0;
 	return true;
 }
+
+void	Screen::clear()
+{
+	setDisplayData(VideoMemory, active_screen->back_color);
+	active_screen->x = 0;
+	active_screen->y = 0;
+	active_screen->cursor_position = 0;
+	active_screen->buffer_size = 0;
+	put_cursor_at();
+}

@@ -83,6 +83,8 @@ namespace crowos
 			void			print_shell_promt();
 
 			bool			get_buffer(char *command);
+
+			void			clear();
 		};
 
 	}
