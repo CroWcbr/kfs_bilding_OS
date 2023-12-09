@@ -54,6 +54,28 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 		SetIterruptDescriptorTable(i, CodeSegment, &IgnoreInterruptRequest, 0, IDT_INTERRUPT_GATE);
 	}
 
+	SetIterruptDescriptorTable(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x00, CodeSegment, &HandleException0x00, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x01, CodeSegment, &HandleException0x01, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x02, CodeSegment, &HandleException0x02, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x03, CodeSegment, &HandleException0x03, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x04, CodeSegment, &HandleException0x04, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x05, CodeSegment, &HandleException0x05, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x06, CodeSegment, &HandleException0x06, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x07, CodeSegment, &HandleException0x07, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x08, CodeSegment, &HandleException0x08, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x09, CodeSegment, &HandleException0x09, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0A, CodeSegment, &HandleException0x0A, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0B, CodeSegment, &HandleException0x0B, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0C, CodeSegment, &HandleException0x0C, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0D, CodeSegment, &HandleException0x0D, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0E, CodeSegment, &HandleException0x0E, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x0F, CodeSegment, &HandleException0x0F, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x10, CodeSegment, &HandleException0x10, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x11, CodeSegment, &HandleException0x11, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x12, CodeSegment, &HandleException0x12, 0, IDT_INTERRUPT_GATE);
+    SetIterruptDescriptorTable(0x13, CodeSegment, &HandleException0x13, 0, IDT_INTERRUPT_GATE);
+
 	SetIterruptDescriptorTable(0x20, CodeSegment, &HandleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
 	SetIterruptDescriptorTable(0x21, CodeSegment, &HandleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
 	SetIterruptDescriptorTable(0x2C, CodeSegment, &HandleInterruptRequest0x0C, 0, IDT_INTERRUPT_GATE);
@@ -119,7 +141,10 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 	}
 	else if (interruptNumber != 0x20)
 	{
-		printf("UNHANDLER INTERRUPT 0x%p\n", interruptNumber);
+		if (interruptNumber < 16)
+			printf("UNHANDLER INTERRUPT 0x0%p\n", interruptNumber);
+		else
+			printf("UNHANDLER INTERRUPT 0x%p\n", interruptNumber);
 	}
 
 

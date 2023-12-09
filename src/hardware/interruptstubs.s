@@ -7,8 +7,8 @@
 .global _ZN6crowos8hardware16InterruptManager22IgnoreInterruptRequestEv
 
 .macro HandleException num
-.global _ZN6crowos8hardware16InterruptManager16HandleException\num\()Ev
-_ZN6crowos8hardware16InterruptManager16HandleException\num\()Ev:
+.global _ZN6crowos8hardware16InterruptManager19HandleException\num\()Ev
+_ZN6crowos8hardware16InterruptManager19HandleException\num\()Ev:
 	movb $\num, (interruptNumber)
 	jmp int_bottom
 .endm
@@ -19,6 +19,27 @@ _ZN6crowos8hardware16InterruptManager26HandleInterruptRequest\num\()Ev:
 	movb $\num + IRQ_BASE, (interruptNumber)
 	jmp int_bottom
 .endm
+
+HandleException 0x00
+HandleException 0x01
+HandleException 0x02
+HandleException 0x03
+HandleException 0x04
+HandleException 0x05
+HandleException 0x06
+HandleException 0x07
+HandleException 0x08
+HandleException 0x09
+HandleException 0x0A
+HandleException 0x0B
+HandleException 0x0C
+HandleException 0x0D
+HandleException 0x0E
+HandleException 0x0F
+HandleException 0x10
+HandleException 0x11
+HandleException 0x12
+HandleException 0x13
 
 HandleInterruptRequest 0x00			# Timer
 HandleInterruptRequest 0x01			# Keyboard
@@ -44,7 +65,7 @@ int_bottom:
 
 _ZN6crowos8hardware16InterruptManager22IgnoreInterruptRequestEv:
 
-	iret 
+	iret
 
 .data
 	interruptNumber: .byte 0

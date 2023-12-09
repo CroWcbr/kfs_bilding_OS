@@ -25,10 +25,6 @@ extern "C" void callConstructors()
 
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 {
-// kfs-1 demonstration
-	// print_42();
-	// printf("%s : %d", "this is ", 5);
-
 	GlobalDescriptorTable gdt;
 	InterruptManager interrupts(&gdt);
 
@@ -46,11 +42,38 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 	drvManager.ActivateAll();
 	interrupts.Activate();
 
+// kfs-1 demonstration
+	// print_42();
+	// printf("%s : %d", "this is ", 5);
+
 // kfs-2 demonstration
 	// print_stack((void*)0);
 	// print_stack((void*)0x800);
 	// print_stack((void*)&gdt);
-	print_stack((void*)0x1);
+	// print_stack((void*)0x1);
+
+// kfs-4 test
+	asm volatile("int $0x00");
+	asm volatile("int $0x01");
+	asm volatile("int $0x02");
+	asm volatile("int $0x03");
+	asm volatile("int $0x04");
+	asm volatile("int $0x05");
+	asm volatile("int $0x06");
+	asm volatile("int $0x07");
+	asm volatile("int $0x08");
+	asm volatile("int $0x09");
+	asm volatile("int $0x0A");
+	asm volatile("int $0x0B");
+	asm volatile("int $0x0C");
+	asm volatile("int $0x0D");
+	asm volatile("int $0x0E");
+	asm volatile("int $0x0F");
+	asm volatile("int $0x10");
+	asm volatile("int $0x11");
+	asm volatile("int $0x12");
+	asm volatile("int $0x13");
+
 	print_shell_promt();
 	while(1)
 		;
