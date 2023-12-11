@@ -1,69 +1,82 @@
+.DEFAULT_GOAL 	:=	help
 
-CC				=	gcc
-CFLAGS			=	-m32 -Iinclude -fno-builtin -fno-exceptions -fno-stack-protector -fno-rtti -nostdlib -nodefaultlibs -fno-use-cxa-atexit \
-									-fno-leading-underscore -Wno-write-strings
+BIN_NAME		=	mykernel.bin
+ISO_NAME		=	mykernel.iso
 
-ASPARAMS		=	--32
+CC 				=	gcc
+CC_FLAGS		=	-m32 -Iinclude -fno-builtin -fno-exceptions \
+					-fno-stack-protector -fno-rtti -nostdlib \
+					-nodefaultlibs -fno-use-cxa-atexit \
+					-fno-leading-underscore -Wno-write-strings
+
+ASM				=	as
+ASM_FLAGS		=	--32
+
 LDPARAMS		=	-m elf_i386
 
-OBJECTS			=	obj/loader.o \
-					obj/gdt.o \
-					obj/common/stdio.o \
-					obj/drivers/driver.o \
-					obj/hardware/port.o \
-					obj/hardware/interruptstubs.o \
-					obj/hardware/interrupts.o \
-					obj/drivers/keyboard.o \
-					obj/drivers/mouse.o \
-					obj/vga/screen.o \
-					obj/devicemanager/screenmanager.o \
-					obj/devicemanager/keyboardmanager.o \
-					obj/devicemanager/mousemanager.o \
-					obj/kernel.o \
-					obj/common/print_stack.o \
-					obj/common/print_shell_promt.o \
-					obj/common/print_42.o
+SRC_DIR			=	./src
+SRC_CPP			=	gdt.cpp \
+					hardware/port.cpp \
+					hardware/interrupts.cpp \
+					drivers/driver.cpp \
+					drivers/keyboard.cpp \
+					drivers/mouse.cpp \
+					vga/screen.cpp \
+					devicemanager/screenmanager.cpp \
+					devicemanager/keyboardmanager.cpp \
+					devicemanager/mousemanager.cpp \
+					common/stdio.cpp \
+					common/print_stack.cpp \
+					common/print_shell_promt.cpp \
+					common/print_42.cpp \
+					kernel.cpp
 
-obj/%.o			:	src/%.cpp
+SRC_ASM			=	loader.s \
+					hardware/interruptstubs.s
+
+OBJ_DIR			=	obj
+OBJECTS			=	$(SRC_CPP:%.cpp=$(OBJ_DIR)/%.o) $(SRC_ASM:%.s=$(OBJ_DIR)/%.o)
+
+$(OBJ_DIR)/%.o	:	$(SRC_DIR)/%.cpp
+					@mkdir -p $(@D)
+					$(CC) $(CC_FLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.o	:	$(SRC_DIR)/%.s
 					mkdir -p $(@D)
-					$(CC) $(CFLAGS) -o $@ -c $<
+					$(ASM) $(ASM_FLAGS) -o $@ $<
 
-obj/%.o			:	src/%.s
-					mkdir -p $(@D)
-					as $(ASPARAMS) -o $@ $<
+bin				:	linker.ld $(OBJECTS)
+					ld $(LDPARAMS) -T $< -o $(BIN_NAME) $(OBJECTS)
 
-mykernel.bin	:	linker.ld $(OBJECTS)
-					ld $(LDPARAMS) -T $< -o $@ $(OBJECTS)
-
-install			:	mykernel.bin
-					sudo cp $< /boot/mykernel.bin
-
-mykernel.iso	:	mykernel.bin
+iso				:	bin
 					rm -rf iso
 					mkdir iso
 					mkdir iso/boot
 					mkdir iso/boot/grub
-					cp $< iso/boot
+					cp $(BIN_NAME) iso/boot
 					echo 'set timeout=0' >> iso/boot/grub/grub.cfg
 					echo 'set default=0' >> iso/boot/grub/grub.cfg
 					echo '' >> iso/boot/grub/grub.cfg
 					echo 'menuentry "CroW Operating System" {' >> iso/boot/grub/grub.cfg
-					echo '  multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
+					echo '  multiboot /boot/$(BIN_NAME)' >> iso/boot/grub/grub.cfg
 					echo '  boot' >> iso/boot/grub/grub.cfg
 					echo '}' >> iso/boot/grub/grub.cfg
-					grub-mkrescue --output=$@ iso
+					grub-mkrescue --output=$(ISO_NAME) iso
 					rm -rf iso
-
-run				:	mykernel.iso
-					qemu-system-i386 -cdrom mykernel.iso
-
-clean			:
-					rm -rf obj mykernel.bin mykernel.iso
 
 help			:
 					@echo "Available targets:"
 					@echo "  run     - Run OS inside qemu emulator"
 					@echo "  install - Install OS into boot section"
-					@echo "  clean   - Remove obj files"
+					@echo "  clean   - Remove all files"
 
-.PHONY			:	clean run install help
+install			:	bin
+					sudo cp $(BIN_NAME) /boot/$(BIN_NAME)
+
+run				:	$(ISO_NAME)
+					qemu-system-i386 -cdrom $(ISO_NAME)
+
+clean			:
+					rm -rf $(OBJ_DIR) $(BIN_NAME) $(ISO_NAME)
+
+.PHONY			:	clean run install help bin iso
