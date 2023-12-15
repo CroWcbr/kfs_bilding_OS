@@ -15,8 +15,8 @@ namespace crowos
 		public:
 			KeyboardEventHandler();
 
-			virtual void OnKeyDown(char);
-			virtual void OnKeyUp(char);
+			virtual void OnKeyDown(crowos::common::uint8_t);
+			virtual void OnKeyUp(crowos::common::uint8_t);
 		};
 
 		class KeyboardDriver : public crowos::hardware::InterruptHandler, public Driver

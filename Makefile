@@ -29,6 +29,7 @@ SRC_CPP			=	gdt.cpp \
 					common/print_stack.cpp \
 					common/print_shell_promt.cpp \
 					common/print_42.cpp \
+					shell/shell.cpp \
 					kernel.cpp
 
 SRC_ASM			=	loader.s \
@@ -73,7 +74,7 @@ help			:
 install			:	bin
 					sudo cp $(BIN_NAME) /boot/$(BIN_NAME)
 
-run				:	$(ISO_NAME)
+run				:	iso
 					qemu-system-i386 -cdrom $(ISO_NAME)
 
 clean			:

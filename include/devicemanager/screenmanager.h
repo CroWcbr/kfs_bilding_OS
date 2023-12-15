@@ -11,7 +11,7 @@ namespace crowos
 		class ScreenManager
 		{
 		protected:
-			crowos::vga::Screen	*my_screen;
+			crowos::vga::Screen		*my_screen;
 
 		public:
 			static ScreenManager&	getInstance();

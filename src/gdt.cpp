@@ -16,7 +16,7 @@ GlobalDescriptorTable::GlobalDescriptorTable()
 
 	uint8_t* src = reinterpret_cast<uint8_t*>(this);
 	uint8_t* dest = reinterpret_cast<uint8_t*>(GDT_ADRESS);
-	for (int i = 0; i < 32; ++i)
+	for (int i = 0; i < 4 * 8; ++i)
 		dest[i] = src[i];
 
 	asm volatile("lgdt (%0)": :"p" (((uint8_t *)i) + 2));

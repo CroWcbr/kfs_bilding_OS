@@ -8,10 +8,10 @@ using namespace crowos::hardware;
 KeyboardEventHandler::KeyboardEventHandler()
 {}
 
-void KeyboardEventHandler::OnKeyDown(char)
+void KeyboardEventHandler::OnKeyDown(uint8_t)
 {}
 
-void KeyboardEventHandler::OnKeyUp(char)
+void KeyboardEventHandler::OnKeyUp(uint8_t)
 {}
 
 KeyboardDriver::KeyboardDriver(InterruptManager* manager, KeyboardEventHandler *handler)
@@ -39,6 +39,8 @@ void KeyboardDriver::Activate()
 uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
 {
 	uint8_t key = dataport.Read();
+
+	// printf("\nHandleInterrupt 0x%X\n", key);
 
 	if(handler == 0)
 		return esp;

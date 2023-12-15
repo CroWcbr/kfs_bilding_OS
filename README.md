@@ -8,7 +8,7 @@
 - An interface to save the stack before a panic
 - Syscalls
 - multi keyboard (qwerty, azerty)
-- get_line function
+- get_line function (my_screen->get_buffer) (finished)
 
 ## kfs-1 - Grub, boot and screen (finished)
 - make a kernel, bootable with GRUB, who can write characters on screen
@@ -24,10 +24,7 @@
 ## kfs-2 - GDT & Stack (finished)
 - create a Global Descriptor Table and set GDT at address 0x00000800
 #### Bonus
-- simple Shell (reboot, halt, stack, shutdown, clear)
-```
-stupid realization.... I add class Shell in future....
-```
+- simple Shell class (reboot, halt, stack, shutdown, clear)
 
 ## kfs-3 - Memory
 - reading theory
@@ -41,7 +38,7 @@ stupid realization.... I add class Shell in future....
 #### Bonus
 - Syscalls
 - multi keyboard (qwerty, azerty)
-- get_line function
+- get_line function (my_screen->get_buffer)
 
 ## Sources
 - materials
@@ -49,6 +46,7 @@ stupid realization.... I add class Shell in future....
 https://wiki.osdev.org/Main_Page
 https://www.gnu.org/software/grub/manual/multiboot/multiboot.html
 https://littleosbook.github.io/
+https://github.com/littleosbook
 ```
 - video tutorials with explanations
 ```

@@ -7,13 +7,18 @@ using namespace crowos::common;
 PrintfKeyboardEventHandler::PrintfKeyboardEventHandler()
 {
 	my_screen = &(ScreenManager::getInstance());
-	shift = false;
-	ctrl = false;
-	tab = false;
+	shift = 0;
+	ctrl = 0;
+	tab = 0;
 }
 
-void PrintfKeyboardEventHandler::OnKeyDown(char key)
+void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 {
+	// if (scan_codes[1].qwerty == -1)
+	{
+		// printf("\nfalse scancode 0x%d\n", scan_codes[1].qwerty);
+	}
+
 	switch (key)
 	{
 //keyboard zero row - only used
@@ -53,8 +58,6 @@ void PrintfKeyboardEventHandler::OnKeyDown(char key)
 		case 0x2B: my_screen->putchar('\\'); break;
 		case 0x1C: //enter
 			my_screen->check_command();
-			// my_screen->putchar('\n');
-			//check command? i think here....
 			my_screen->print_shell_promt();
 			break;
 //keyboard third row
@@ -99,15 +102,15 @@ void PrintfKeyboardEventHandler::OnKeyDown(char key)
 		// 	shift = 0;
 		// 	break;
 
-		// default: //print all for test!
-		// 	printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
-		// 	break;
+		default: //print all for test!
+			printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
+			break;
 	}
 
 }
 
-void PrintfKeyboardEventHandler::OnKeyUp(char c)
+void PrintfKeyboardEventHandler::OnKeyUp(uint8_t key)
 {
 	// default: //print all for test!
-	// 	printf("\nKEYBOARD OnKeyUp 0x%X\n", key);
+	// printf("\nKEYBOARD OnKeyUp 0x%X\n", key - 0x80);
 }

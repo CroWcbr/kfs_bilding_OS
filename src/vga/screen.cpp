@@ -92,6 +92,8 @@ void	Screen::putchar(char c, uint8_t text_color, uint8_t back_color)
 
 void Screen::put_color_char(char c, int16_t pos, uint8_t text_color, uint8_t back_color)
 {
+	// Bit:     | 15 14 13 12 11 10 9 8 | 7 6 5 4 | 3 2 1 0 |
+	// Content: | ASCII                 | FG      | BG      |
 	VideoMemory[pos] = ((text_color | (back_color << 4)) << 8) | c;
 }
 
@@ -164,15 +166,16 @@ void	Screen::update_cursor_position()
 
 void Screen::port_byte_out(uint16_t port, uint8_t data)
 {
+	// work like Class port
 	asm volatile ("outb %0, %1" :: "a"(data), "Nd"(port));
 }
 
 void Screen::put_cursor_at()
 {
-	port_byte_out(0x3d4, 0xe);
-	port_byte_out(0x3d5, active_screen->cursor_position >> 8);
-	port_byte_out(0x3d4, 0xf);
-	port_byte_out(0x3d5, active_screen->cursor_position);
+	port_byte_out(0x3d4, 0xe);									// 0xe tells the framebuffer to expect the highest 8 bits of the position
+	port_byte_out(0x3d5, active_screen->cursor_position >> 8);	// sending the highest 8 bits of cursor position
+	port_byte_out(0x3d4, 0xf);									// 0xf tells the framebuffer to expect the lowest 8 bits of the position
+	port_byte_out(0x3d5, active_screen->cursor_position);		// sending the lowest 8 bits of cursor position
 }
 
 void Screen::print_shell_promt()
