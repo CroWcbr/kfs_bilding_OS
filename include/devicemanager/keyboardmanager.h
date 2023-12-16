@@ -9,29 +9,16 @@ namespace crowos
 {
 	namespace devicemanager
 	{
-
-		#define MAX_SCAN_CODE 0x80	//128
-
 		class PrintfKeyboardEventHandler : public crowos::drivers::KeyboardEventHandler
 		{
 		private:	
-			struct key_code
-			{
-				char qwerty;
-				char shift_qwerty;
-				char azerty;
-				char shift_azerty;
-			};
-
-			key_code scan_codes[MAX_SCAN_CODE];
 
 		private:
 			ScreenManager*	my_screen;
-
-		private:
-			crowos::common::int8_t			shift;
-			crowos::common::int8_t			ctrl;
-			crowos::common::int8_t			tab;
+			crowos::common::int8_t			key_shift;
+			// crowos::common::int8_t			key_ctrl;
+			// crowos::common::int8_t			key_caps;
+			bool							qwerty_layout;
 
 		private:
 			void OnKeyDown(crowos::common::uint8_t key);

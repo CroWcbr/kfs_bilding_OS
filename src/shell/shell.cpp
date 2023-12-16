@@ -74,6 +74,25 @@ void Shell::exec_cmd(char *command, Screen *my_screen)
     {
         my_screen->clear();
     }
+    else if (command[0] == 'h' && \
+            command[1] == 'e' && \
+            command[2] == 'l' && \
+            command[3] == 'p' && \
+            command[4] == 0)
+    {
+			const char *help_info = R"(CROW Kernel:
+    F1-F3      - change screen
+    F4         - change layout
+kernel command :
+    stack      - print stack
+    halt       - stop all
+    shutdown   - turn off kernel
+    help       - print info
+    clear      - clear screen
+    reboot     - reboot kernel
+)";
+        printf("%s", help_info);
+    }
 	else
 		printf("It is not command!\n");
 }
