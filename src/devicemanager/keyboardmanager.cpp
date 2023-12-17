@@ -9,9 +9,20 @@ PrintfKeyboardEventHandler::PrintfKeyboardEventHandler()
 	my_screen = &(ScreenManager::getInstance());
 
 	key_shift = 0;
+	key_caps = false;
 	qwerty_layout = true;
-	// key_ctrl = 0;
-	// key_caps = 0;
+}
+
+void PrintfKeyboardEventHandler::chooseKeyLetterLayout(char key[4])
+{
+	int pos = (qwerty_layout ? 0 : 2) + (key_caps ? (key_shift ? 0 : 1) : (key_shift ? 1 : 0));
+	my_screen->putchar(key[pos]);
+}
+
+void PrintfKeyboardEventHandler::chooseKeyLetter(char key[2])
+{
+	int pos = (key_caps ? (key_shift ? 0 : 1) : (key_shift ? 1 : 0));
+	my_screen->putchar(key[pos]);
 }
 
 void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
@@ -41,20 +52,16 @@ void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 		case 0x0E: my_screen->putchar('\b'); break;	//backspace
 //keyboard second row
 		case 0x0F: my_screen->putchar('\t'); break;	//tab
-		case 0x10: 
-			my_screen->putchar(key_shift ? qwerty_layout ? 'Q' : 'A' : qwerty_layout ? 'q' : 'a');
-			break;
-		case 0x11:
-			my_screen->putchar(key_shift ? qwerty_layout ? 'W' : 'Z' : qwerty_layout ? 'w' : 'z');
-			break;
-		case 0x12: my_screen->putchar(key_shift ? 'E' : 'e'); break;
-		case 0x13: my_screen->putchar(key_shift ? 'R' : 'r'); break;
-		case 0x14: my_screen->putchar(key_shift ? 'T' : 't'); break;
-		case 0x15: my_screen->putchar(key_shift ? 'Y' : 'y'); break;
-		case 0x16: my_screen->putchar(key_shift ? 'U' : 'u'); break;
-		case 0x17: my_screen->putchar(key_shift ? 'I' : 'i'); break;
-		case 0x18: my_screen->putchar(key_shift ? 'O' : 'o'); break;
-		case 0x19: my_screen->putchar(key_shift ? 'P' : 'p'); break;
+		case 0x10: chooseKeyLetterLayout("qQaA"); break;
+		case 0x11: chooseKeyLetterLayout("wWzZ"); break;
+		case 0x12: chooseKeyLetter("eE"); break;
+		case 0x13: chooseKeyLetter("rR"); break;
+		case 0x14: chooseKeyLetter("tT"); break;
+		case 0x15: chooseKeyLetter("yY"); break;
+		case 0x16: chooseKeyLetter("uU"); break;
+		case 0x17: chooseKeyLetter("iI"); break;
+		case 0x18: chooseKeyLetter("oO"); break;
+		case 0x19: chooseKeyLetter("pP"); break;
 		case 0x1A: my_screen->putchar(key_shift ? '{' :'['); break;
 		case 0x1B: my_screen->putchar(key_shift ? '}' :']'); break;
 		case 0x2B: my_screen->putchar(key_shift ? '|' :'\\'); break;
@@ -64,30 +71,26 @@ void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 			break;
 //keyboard third row
 		//CAPS missed
-		case 0x1E:
-			my_screen->putchar(key_shift ? qwerty_layout ? 'A' : 'Q' : qwerty_layout ? 'a' : 'q');
-			break;
-		case 0x1F: my_screen->putchar(key_shift ? 'S' : 's'); break;
-		case 0x20: my_screen->putchar(key_shift ? 'D' : 'd'); break;
-		case 0x21: my_screen->putchar(key_shift ? 'F' : 'f'); break;
-		case 0x22: my_screen->putchar(key_shift ? 'G' : 'g'); break;
-		case 0x23: my_screen->putchar(key_shift ? 'H' : 'h'); break;
-		case 0x24: my_screen->putchar(key_shift ? 'J' : 'j'); break;
-		case 0x25: my_screen->putchar(key_shift ? 'K' : 'k'); break;
-		case 0x26: my_screen->putchar(key_shift ? 'L' : 'l'); break;
+		case 0x1E: chooseKeyLetterLayout("aAqQ"); break;
+		case 0x1F: chooseKeyLetter("sS"); break;
+		case 0x20: chooseKeyLetter("dD"); break;
+		case 0x21: chooseKeyLetter("fF"); break;
+		case 0x22: chooseKeyLetter("gG"); break;
+		case 0x23: chooseKeyLetter("hH"); break;
+		case 0x24: chooseKeyLetter("jJ"); break;
+		case 0x25: chooseKeyLetter("kK"); break;
+		case 0x26: chooseKeyLetter("lL"); break;
 		case 0x27: my_screen->putchar(key_shift ? ':' : ';'); break;
 		case 0x28: my_screen->putchar(key_shift ? '\"' : '\''); break;
 //keyboard fourth row
 		case 0x2A: ++key_shift; break;
-		case 0x2C:
-			my_screen->putchar(key_shift ? qwerty_layout ? 'Z' : 'W' : qwerty_layout ? 'z' : 'w');
-			break;
-		case 0x2D: my_screen->putchar(key_shift ? 'X' : 'x'); break;
-		case 0x2E: my_screen->putchar(key_shift ? 'C' : 'c'); break;
-		case 0x2F: my_screen->putchar(key_shift ? 'V' : 'v'); break;
-		case 0x30: my_screen->putchar(key_shift ? 'B' : 'b'); break;
-		case 0x31: my_screen->putchar(key_shift ? 'N' : 'n'); break;
-		case 0x32: my_screen->putchar(key_shift ? 'M' : 'm'); break;
+		case 0x2C: chooseKeyLetterLayout("zZwW"); break;
+		case 0x2D: chooseKeyLetter("xX"); break;
+		case 0x2E: chooseKeyLetter("cC"); break;
+		case 0x2F: chooseKeyLetter("vV"); break;
+		case 0x30: chooseKeyLetter("bB"); break;
+		case 0x31: chooseKeyLetter("nN"); break;
+		case 0x32: chooseKeyLetter("mM"); break;
 		case 0x33: my_screen->putchar(key_shift ? '<' : ','); break;
 		case 0x34: my_screen->putchar(key_shift ? '>' : '.'); break;
 		case 0x35: my_screen->putchar(key_shift ? '?' : '/'); break;
@@ -96,7 +99,7 @@ void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 //keyboard fifth row - only used
 		case 0x39: my_screen->putchar(' '); break;	//space
 
-		// case 0x3A: ++key_caps; break;
+		case 0x3A: key_caps ? key_caps = false : key_caps = true;; break;
 		// case 0x1D: ++key_ctrl; break;
 
 		default: //print all for test!

@@ -145,6 +145,30 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 			printf("UNHANDLER INTERRUPT 0x0%p\n", interruptNumber);
 		else
 			printf("UNHANDLER INTERRUPT 0x%p\n", interruptNumber);
+		
+		printf("esp = %d\n", esp);
+		uint32_t x;
+    	// asm(" mov %%eax, %0" : "=r" (x));
+		// printf("eax = %u\t", x);
+    	// asm(" mov %%ebx, %0" : "=r" (x));
+		// printf("ebx = %u\t", x);
+    	// asm(" mov %%ecx, %0" : "=r" (x));
+		// printf("ecx = %u\t", x);
+    	// asm(" mov %%edx, %0" : "=r" (x));
+		// printf("edx = %u\n", x);
+    	asm(" mov %%esp, %0" : "=r" (x));
+		printf("esp = %u\t", x);
+    	// asm(" mov %%ebp, %0" : "=r" (x));
+		// printf("ebp = %u\t", x);
+    	// asm(" mov %%esi, %0" : "=r" (x));
+		// printf("esi = %u\t", x);
+    	// asm(" mov %%edi, %0" : "=r" (x));
+		// printf("edi = %u\n", x);
+
+		while(1)
+		{
+			
+		}
 	}
 
 
