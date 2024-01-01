@@ -61,12 +61,28 @@ namespace crowos
 			Port8bitSlow	picSlaveData;
 
 			static crowos::common::uint32_t	handleInterrupt(crowos::common::uint8_t interruptNumber, crowos::common::uint32_t esp);
-			crowos::common::uint32_t	DoHandleInterrupt(crowos::common::uint8_t interruptNumber, crowos::common::uint32_t esp);
+			crowos::common::uint32_t		DoHandleInterrupt(crowos::common::uint8_t interruptNumber, crowos::common::uint32_t esp);
+			void							isr_handler(crowos::common::uint8_t interruptNumber);
+			void							irq_handler(crowos::common::uint8_t interruptNumber);
+			void							clean_all_registers();
 
 			static void		IgnoreInterruptRequest();
 			static void		HandleInterruptRequest0x00();
 			static void		HandleInterruptRequest0x01();
+			static void		HandleInterruptRequest0x02();
+			static void		HandleInterruptRequest0x03();
+			static void		HandleInterruptRequest0x04();
+			static void		HandleInterruptRequest0x05();
+			static void		HandleInterruptRequest0x06();
+			static void		HandleInterruptRequest0x07();
+			static void		HandleInterruptRequest0x08();
+			static void		HandleInterruptRequest0x09();
+			static void		HandleInterruptRequest0x0A();
+			static void		HandleInterruptRequest0x0B();
 			static void		HandleInterruptRequest0x0C();
+			static void		HandleInterruptRequest0x0D();
+			static void		HandleInterruptRequest0x0E();
+			static void		HandleInterruptRequest0x0F();
 
 			static void		HandleException0x00();
 			static void 	HandleException0x01();

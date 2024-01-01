@@ -103,7 +103,7 @@ void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 		// case 0x1D: ++key_ctrl; break;
 
 		default: //print all for test!
-			printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
+			// printf("\nKEYBOARD OnKeyDown 0x%X\n", key);
 			break;
 	}
 
@@ -118,8 +118,8 @@ void PrintfKeyboardEventHandler::OnKeyUp(uint8_t key)
 		// case 0x3A: --key_caps; break;
 		// case 0x1D: --key_ctrl; break;
 		
-		// default: //print all for test!
+		default: //print all for test!
 		// 	printf("\nKEYBOARD OnKeyUp 0x%X\n", key);
-		// 	break;
+			break;
 	}
 }

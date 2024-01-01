@@ -53,29 +53,8 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 	// print_stack((void*)0x1);
 
 // kfs-4 test
-	// asm volatile("int $0x00");
-	// int x = 0;
-	// int y = 10;
-	// int xy = y/x;
-	// asm volatile("int $0x01");
-	// asm volatile("int $0x02");
-	// asm volatile("int $0x03");
-	// asm volatile("int $0x04");
-	// asm volatile("int $0x05");
-	// asm volatile("int $0x06");
-	// asm volatile("int $0x07");
-	// asm volatile("int $0x08");
-	// asm volatile("int $0x09");
-	// asm volatile("int $0x0A");
-	// asm volatile("int $0x0B");
-	// asm volatile("int $0x0C");
-	// asm volatile("int $0x0D");
-	// asm volatile("int $0x0E");
-	// asm volatile("int $0x0F");
-	// asm volatile("int $0x10");
-	// asm volatile("int $0x11");
-	// asm volatile("int $0x12");
-	// asm volatile("int $0x13");
+	// asm volatile("int $0x2D");	// IRQ 0x 20-2F
+	// asm volatile("int $0x00");	// ISR 0x 00-1F
 
 	print_shell_promt();
 	while(1)

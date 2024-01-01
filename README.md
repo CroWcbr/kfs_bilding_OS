@@ -1,10 +1,6 @@
 # My own Operating System
 
 ## TODO kfs4
-- A signal-callback system on your Kernel API (draft)
-- An interface to schedule signals
-- An interface to clean registers before a panic / halt
-- An interface to save the stack before a panic
 - Syscalls
 
 ## kfs-1 - Grub, boot and screen (finished)

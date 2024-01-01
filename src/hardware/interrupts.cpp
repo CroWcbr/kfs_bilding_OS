@@ -78,7 +78,20 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 
 	SetIterruptDescriptorTable(0x20, CodeSegment, &HandleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
 	SetIterruptDescriptorTable(0x21, CodeSegment, &HandleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x22, CodeSegment, &HandleInterruptRequest0x02, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x23, CodeSegment, &HandleInterruptRequest0x03, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x24, CodeSegment, &HandleInterruptRequest0x04, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x25, CodeSegment, &HandleInterruptRequest0x05, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x26, CodeSegment, &HandleInterruptRequest0x06, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x27, CodeSegment, &HandleInterruptRequest0x07, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x28, CodeSegment, &HandleInterruptRequest0x08, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x29, CodeSegment, &HandleInterruptRequest0x09, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x2A, CodeSegment, &HandleInterruptRequest0x0A, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x2B, CodeSegment, &HandleInterruptRequest0x0B, 0, IDT_INTERRUPT_GATE);
 	SetIterruptDescriptorTable(0x2C, CodeSegment, &HandleInterruptRequest0x0C, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x2D, CodeSegment, &HandleInterruptRequest0x0D, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x2E, CodeSegment, &HandleInterruptRequest0x0E, 0, IDT_INTERRUPT_GATE);
+	SetIterruptDescriptorTable(0x2F, CodeSegment, &HandleInterruptRequest0x0F, 0, IDT_INTERRUPT_GATE);
 
 	picMasterCommand.Write(0x11);
 	picSlaveCommand.Write(0x11);
@@ -133,6 +146,89 @@ uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber, uint32_t esp
 	return esp;
 }
 
+void InterruptManager::clean_all_registers()
+{
+    asm volatile (
+        "xor %eax, %eax \n\t"
+        "xor %ebx, %ebx \n\t"
+        "xor %ecx, %ecx \n\t"
+        "xor %edx, %edx \n\t"
+        "xor %esi, %esi \n\t"
+        "xor %edi, %edi \n\t"
+        "xor %ebp, %ebp \n\t"
+    );
+}
+
+void InterruptManager::isr_handler(uint8_t interruptNumber)
+{
+	printf("Interrupt Service Routine handler ");
+	if (interruptNumber < 16)
+		printf("0x0%p\n", interruptNumber);
+	else
+		printf("0x%p\n", interruptNumber);
+
+	switch (interruptNumber)
+	{
+		case 0x00: printf("Division by Zero\n"); break;
+		case 0x01: printf("Debugger\n"); break;
+		case 0x02: printf("NMI\n"); break;
+		case 0x03: printf("Breakpoint\n"); break;
+		case 0x04: printf("Overflow\n"); break;
+		case 0x05: printf("Bounds\n"); break;
+		case 0x06: printf("Invalid Opcode\n"); break;
+		case 0x07: printf("Coprocessor not available\n"); break;
+		case 0x08: printf("Double Fault\n"); break;
+		case 0x09: printf("Coprocessor Segment Overrun (386 or earlier only)\n"); break;
+		case 0x0A: printf("Invalid Task State Segment\n"); break;
+		case 0x0B: printf("Segment not present\n"); break;
+		case 0x0C: printf("Stack Fault\n"); break;
+		case 0x0D: printf("General protection fault\n"); break;
+		case 0x0E: printf("Page fault\n"); break;
+		case 0x0F: printf("reserved\n"); break;
+		case 0x10: printf("Math Fault\n"); break;
+		case 0x11: printf("Alignment Check\n"); break;
+		case 0x12: printf("Machine Check\n"); break;
+		case 0x13: printf("SIMD Floating-Point Exception\n"); break;
+		default: printf("unknown ISR code\n"); break;
+	}
+	uint32_t esp;
+	asm(" mov %%esp, %0" : "=r" (esp));
+	printf("esp = 0x%x\n", esp);
+	print_stack((uint8_t*)esp);
+	printf("kernel panic\n");
+	clean_all_registers();
+	__asm__ ("hlt");
+}
+
+void InterruptManager::irq_handler(uint8_t interruptNumber)
+{
+	printf("Interrupt Request handler ");
+	if (interruptNumber < 16)
+		printf("0x0%p\n", interruptNumber);
+	else
+		printf("0x%p\n", interruptNumber);
+	switch (interruptNumber)
+	{
+		case 0x20: printf("Programmable Interrupt Timer Interrupt\n"); break;
+		case 0x21: printf("Keyboard Interrupt\n"); break;
+		case 0x22: printf("Cascade (used internally by the two PICs. never raised)\n"); break;
+		case 0x23: printf("COM2 (if enabled)\n"); break;
+		case 0x24: printf("COM1 (if enabled)\n"); break;
+		case 0x25: printf("LPT2 (if enabled)\n"); break;
+		case 0x26: printf("Floppy Disk\n"); break;
+		case 0x27: printf("LPT1 / Unreliable \"spurious\" interrupt (usually)\n"); break;
+		case 0x28: printf("CMOS real-time clock (if enabled)\n"); break;
+		case 0x29: printf("Free for peripherals / legacy SCSI / NIC\n"); break;
+		case 0x2A: printf("Free for peripherals / SCSI / NIC\n"); break;
+		case 0x2B: printf("Free for peripherals / SCSI / NIC\n"); break;
+		case 0x2C: printf("PS2 Mouse\n"); break;
+		case 0x2D: printf("FPU / Coprocessor / Inter-processor\n"); break;
+		case 0x2E: printf("Primary ATA Hard Disk\n"); break;
+		case 0x2F: printf("Secondary ATA Hard Disk\n"); break;
+		default : printf("unknown IRQ code\n"); break;
+	}
+}
+
 uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t esp)
 {
 	if (handlers[interruptNumber] != 0)
@@ -141,36 +237,13 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 	}
 	else if (interruptNumber != 0x20)
 	{
-		if (interruptNumber < 16)
-			printf("UNHANDLER INTERRUPT 0x0%p\n", interruptNumber);
+		if (interruptNumber < 0x20)
+			isr_handler(interruptNumber);
+		else if (interruptNumber < 0x30)
+			irq_handler(interruptNumber);
 		else
-			printf("UNHANDLER INTERRUPT 0x%p\n", interruptNumber);
-		
-		printf("esp = %d\n", esp);
-		uint32_t x;
-    	// asm(" mov %%eax, %0" : "=r" (x));
-		// printf("eax = %u\t", x);
-    	// asm(" mov %%ebx, %0" : "=r" (x));
-		// printf("ebx = %u\t", x);
-    	// asm(" mov %%ecx, %0" : "=r" (x));
-		// printf("ecx = %u\t", x);
-    	// asm(" mov %%edx, %0" : "=r" (x));
-		// printf("edx = %u\n", x);
-    	asm(" mov %%esp, %0" : "=r" (x));
-		printf("esp = %u\t", x);
-    	// asm(" mov %%ebp, %0" : "=r" (x));
-		// printf("ebp = %u\t", x);
-    	// asm(" mov %%esi, %0" : "=r" (x));
-		// printf("esi = %u\t", x);
-    	// asm(" mov %%edi, %0" : "=r" (x));
-		// printf("edi = %u\n", x);
-
-		while(1)
-		{
-			
-		}
+			printf("unknown Interrupt code\n");
 	}
-
 
 	if (0x20 <= interruptNumber && interruptNumber < 0x30)
 	{

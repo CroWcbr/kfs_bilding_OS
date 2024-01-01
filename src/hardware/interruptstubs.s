@@ -43,7 +43,20 @@ HandleException 0x13
 
 HandleInterruptRequest 0x00			# Timer
 HandleInterruptRequest 0x01			# Keyboard
+HandleInterruptRequest 0x02
+HandleInterruptRequest 0x03
+HandleInterruptRequest 0x04
+HandleInterruptRequest 0x05
+HandleInterruptRequest 0x06
+HandleInterruptRequest 0x07
+HandleInterruptRequest 0x08
+HandleInterruptRequest 0x09
+HandleInterruptRequest 0x0A
+HandleInterruptRequest 0x0B
 HandleInterruptRequest 0x0C			# Mouse
+HandleInterruptRequest 0x0D
+HandleInterruptRequest 0x0E
+HandleInterruptRequest 0x0F
 
 int_bottom:
 	pusha
@@ -64,7 +77,6 @@ int_bottom:
 	popa
 
 _ZN6crowos8hardware16InterruptManager22IgnoreInterruptRequestEv:
-
 	iret
 
 .data
