@@ -17,6 +17,7 @@ _ZN6crowos8hardware16InterruptManager19HandleException\num\()Ev:
 .global _ZN6crowos8hardware16InterruptManager26HandleInterruptRequest\num\()Ev
 _ZN6crowos8hardware16InterruptManager26HandleInterruptRequest\num\()Ev:
 	movb $\num + IRQ_BASE, (interruptNumber)
+	pushl $0
 	jmp int_bottom
 .endm
 
@@ -58,23 +59,28 @@ HandleInterruptRequest 0x0D
 HandleInterruptRequest 0x0E
 HandleInterruptRequest 0x0F
 
-int_bottom:
-	pusha
-	pushl %ds
-	pushl %es
-	pushl %fs
-	pushl %gs
+HandleInterruptRequest 0x80
 
-	pushl %esp
-	push (interruptNumber)
-	call _ZN6crowos8hardware16InterruptManager15handleInterruptEhj
-	movl %eax, %esp
-
-	popl %gs
-	popl %fs
-	popl %es
-	popl %ds
-	popa
+int_bottom:  
+    pushl %ebp
+    pushl %edi
+    pushl %esi
+    pushl %edx
+    pushl %ecx
+    pushl %ebx
+    pushl %eax
+    pushl %esp
+    push (interruptNumber)
+    call _ZN6crowos8hardware16InterruptManager15handleInterruptEhj
+    mov %eax, %esp # switch the stack
+    popl %eax
+    popl %ebx
+    popl %ecx
+    popl %edx
+    popl %esi
+    popl %edi
+    popl %ebp
+	add $4, %esp
 
 _ZN6crowos8hardware16InterruptManager22IgnoreInterruptRequestEv:
 	iret

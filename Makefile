@@ -18,6 +18,7 @@ SRC_DIR			=	./src
 SRC_CPP			=	gdt.cpp \
 					hardware/port.cpp \
 					hardware/interrupts.cpp \
+					hardware/syscalls.cpp \
 					drivers/driver.cpp \
 					drivers/keyboard.cpp \
 					drivers/mouse.cpp \

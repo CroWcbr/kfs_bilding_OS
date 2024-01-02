@@ -1,8 +1,5 @@
 # My own Operating System
 
-## TODO kfs4
-- Syscalls
-
 ## kfs-1 - Grub, boot and screen (finished)
 - make a kernel, bootable with GRUB, who can write characters on screen
 - code the interface between your kernel and the screen
@@ -22,7 +19,7 @@
 ## kfs-3 - Memory
 - reading theory
 
-## kfs-4 - Interrupts (in progress)
+## kfs-4 - Interrupts (finished)
 - Create an Interrupts Descriptor Table, fill it and register it
 - A signal-callback system on your Kernel API
 - An interface to schedule signals

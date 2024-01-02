@@ -1,6 +1,7 @@
 #include <common/types.h>
 #include <gdt.h>
 #include <hardware/interrupts.h>
+#include <hardware/syscalls.h>
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
@@ -27,6 +28,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 {
 	GlobalDescriptorTable gdt;
 	InterruptManager interrupts(&gdt);
+	SyscallHandler syscalls(&interrupts, 0x80);
 
 	DriverManager drvManager;
 
@@ -52,9 +54,13 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 	// print_stack((void*)&gdt);
 	// print_stack((void*)0x1);
 
-// kfs-4 test
+// kfs-4 demonstration main
 	// asm volatile("int $0x2D");	// IRQ 0x 20-2F
 	// asm volatile("int $0x00");	// ISR 0x 00-1F
+// kfs-4 demonstration bonus syscalls
+    // char *str = "123456";
+	// int len = 5;
+    // asm("int $0x80" : : "a" (4), "b" (str), "c" (len));
 
 	print_shell_promt();
 	while(1)

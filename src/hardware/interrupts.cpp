@@ -93,6 +93,8 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 	SetIterruptDescriptorTable(0x2E, CodeSegment, &HandleInterruptRequest0x0E, 0, IDT_INTERRUPT_GATE);
 	SetIterruptDescriptorTable(0x2F, CodeSegment, &HandleInterruptRequest0x0F, 0, IDT_INTERRUPT_GATE);
 
+	SetIterruptDescriptorTable(0x80, CodeSegment, &HandleInterruptRequest0x80, 0, IDT_INTERRUPT_GATE);
+
 	picMasterCommand.Write(0x11);
 	picSlaveCommand.Write(0x11);
 
@@ -117,7 +119,7 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 
 InterruptManager::~InterruptManager()
 {
-
+	Deactivate();
 }
 
 void InterruptManager::Activate()
@@ -140,9 +142,7 @@ void InterruptManager::Deactivate()
 uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber, uint32_t esp)
 {
 	if (ActivateInterruptManager != 0)
-	{
 		return ActivateInterruptManager->DoHandleInterrupt(interruptNumber, esp);
-	}
 	return esp;
 }
 
@@ -233,6 +233,9 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 {
 	if (handlers[interruptNumber] != 0)
 	{
+		// printf("DoHandleInterrupt %x\n", interruptNumber);
+		// printf("esp1 %d\n", interruptNumber);
+		// printf("esp2 %x\n", interruptNumber);
 		esp = handlers[interruptNumber]->HandleInterrupt(esp);
 	}
 	else if (interruptNumber != 0x20)
@@ -242,7 +245,7 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 		else if (interruptNumber < 0x30)
 			irq_handler(interruptNumber);
 		else
-			printf("unknown Interrupt code\n");
+			printf("unknown Interrupt code %x\n", interruptNumber);
 	}
 
 	if (0x20 <= interruptNumber && interruptNumber < 0x30)
