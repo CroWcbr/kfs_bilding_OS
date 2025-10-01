@@ -28,7 +28,9 @@ namespace crowos
 			void ActivateAll();
 
 		};
-	}
-}
+
+	} // namespace drivers
+
+} //namespace crowos
 
 #endif

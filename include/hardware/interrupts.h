@@ -14,13 +14,13 @@ namespace crowos
 		class InterruptHandler
 		{
 		protected:
-			crowos::common::uint8_t interruptNumber;
+			uint8 interruptNumber;
 			InterruptManager* interruptManager;
 
-			InterruptHandler(crowos::common::uint8_t interruptNumber, InterruptManager* interruptManager);
+			InterruptHandler(uint8 interruptNumber, InterruptManager* interruptManager);
 			InterruptHandler();
 		public:
-			virtual crowos::common::uint32_t HandleInterrupt(crowos::common::uint32_t esp);
+			virtual uint32 HandleInterrupt(uint32 esp);
 		};
 
 		class InterruptManager
@@ -33,38 +33,38 @@ namespace crowos
 
 			struct GateDescriptor
 			{
-				crowos::common::uint16_t	handlerAddresLowBits;
-				crowos::common::uint16_t	gdt_codeSegmentSelector;
-				crowos::common::uint8_t		reserved;
-				crowos::common::uint8_t		access;
-				crowos::common::uint16_t	handlerAddresHighBits;
+				uint16	handlerAddresLowBits;
+				uint16	gdt_codeSegmentSelector;
+				uint8	reserved;
+				uint8	access;
+				uint16	handlerAddresHighBits;
 			} __attribute__((packed));
 
 			static GateDescriptor interruptDescriptorTable[256];
 
 			struct InterruptDescriptionTablePointer
 			{
-				crowos::common::uint16_t	size;
-				crowos::common::uint32_t	base;
+				uint16	size;
+				uint32	base;
 			} __attribute__((packed));
 
 			static void SetIterruptDescriptorTable(
-				crowos::common::uint8_t interruptNumber,
-				crowos::common::uint16_t gdt_codeSegmentSelectorOffset,
+				uint8 interruptNumber,
+				uint16 gdt_codeSegmentSelectorOffset,
 				void (*handler)(),
-				crowos::common::uint8_t DescriptorPrivilegeLevel,
-				crowos::common::uint8_t DescriptorType);
+				uint8 DescriptorPrivilegeLevel,
+				uint8 DescriptorType);
 
 			Port8bitSlow	picMasterCommand;
 			Port8bitSlow	picMasterData;
 			Port8bitSlow	picSlaveCommand;
 			Port8bitSlow	picSlaveData;
 
-			static crowos::common::uint32_t	handleInterrupt(crowos::common::uint8_t interruptNumber, crowos::common::uint32_t esp);
-			crowos::common::uint32_t		DoHandleInterrupt(crowos::common::uint8_t interruptNumber, crowos::common::uint32_t esp);
-			void							isr_handler(crowos::common::uint8_t interruptNumber);
-			void							irq_handler(crowos::common::uint8_t interruptNumber);
-			void							clean_all_registers();
+			static uint32	handleInterrupt(uint8 interruptNumber, uint32 esp);
+			uint32			DoHandleInterrupt(uint8 interruptNumber, uint32 esp);
+			void			isr_handler(uint8 interruptNumber);
+			void			irq_handler(uint8 interruptNumber);
+			void			clean_all_registers();
 
 			static void		IgnoreInterruptRequest();
 			static void		HandleInterruptRequest0x00();
@@ -108,7 +108,7 @@ namespace crowos
 			static void		HandleException0x13();
 
 		public:
-			InterruptManager(crowos::GlobalDescriptorTable* gdt);
+			InterruptManager(GlobalDescriptorTable* gdt);
 			~InterruptManager();
 
 			void Activate();
@@ -117,7 +117,9 @@ namespace crowos
 
 
 		};
-	}
-}
+
+	} // namespace hardware
+
+} // namespace crowos
 
 #endif

@@ -9,20 +9,20 @@ namespace crowos
 {
 	namespace devicemanager
 	{
-		class PrintfKeyboardEventHandler : public crowos::drivers::KeyboardEventHandler
+		class PrintfKeyboardEventHandler : public drivers::KeyboardEventHandler
 		{
 		private:	
 
 		private:
 			ScreenManager*	my_screen;
-			crowos::common::int8_t			key_shift;
-			// crowos::common::int8_t			key_ctrl;
-			bool							key_caps;
-			bool							qwerty_layout;
+			int8			key_shift;
+			// int8			key_ctrl;
+			bool			key_caps;
+			bool			qwerty_layout;
 
 		private:
-			void OnKeyDown(crowos::common::uint8_t key);
-			void OnKeyUp(crowos::common::uint8_t key);
+			void OnKeyDown(uint8 key);
+			void OnKeyUp(uint8 key);
 			void chooseKeyLetterLayout(char key[4]);
 			void chooseKeyLetter(char key[2]);
 
@@ -30,8 +30,8 @@ namespace crowos
 			PrintfKeyboardEventHandler();
 		};
 
-	}
+	} // namespace devicemanager
 
-}
+} // namespace crowos
 
 #endif

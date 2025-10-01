@@ -16,29 +16,32 @@ namespace crowos
 			MouseEventHandler();
 
 			virtual void OnActivate();
-			virtual void OnMouseDown(crowos::common::uint8_t button);
-			virtual void OnMouseUp(crowos::common::uint8_t button);
-			virtual void OnMouseMove(int x, int y);
+			virtual void OnMouseDown(uint8 button);
+			virtual void OnMouseUp(uint8 button);
+			virtual void OnMouseMove(int8 x, int8 y);
 		};
 
-		class MouseDriver : public crowos::hardware::InterruptHandler, public Driver
+		class MouseDriver : public hardware::InterruptHandler, public Driver
 		{
-			crowos::hardware::Port8bit dataport;
-			crowos::hardware::Port8bit commandport;
+			hardware::Port8bit dataport;
+			hardware::Port8bit commandport;
 
-			crowos::common::uint8_t buffer[3];
-			crowos::common::uint8_t offset;
-			crowos::common::uint8_t buttons;
+			uint8 buffer[3];
+			uint8 offset;
+			uint8 buttons;
 
 			MouseEventHandler* handler;
 
 		public:
-			MouseDriver(crowos::hardware::InterruptManager* manager, MouseEventHandler *handler);
+			MouseDriver(hardware::InterruptManager* manager, MouseEventHandler *handler);
 			~MouseDriver();
 
-			virtual crowos::common::uint32_t HandleInterrupt(crowos::common::uint32_t esp);
+			virtual uint32 HandleInterrupt(uint32 esp);
 			virtual void Activate();
 		};
-	}
-}
+
+	} // namespace drivers
+
+} // namespace crowos
+
 #endif

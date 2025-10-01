@@ -1,10 +1,10 @@
 #include <hardware/interrupts.h>
 #include <common/stdio.h>
 
-using namespace crowos::common;
-using namespace crowos::hardware;
+namespace crowos::hardware
+{
 
-InterruptHandler::InterruptHandler(uint8_t interruptNumber, InterruptManager* interruptManager)
+InterruptHandler::InterruptHandler(uint8 interruptNumber, InterruptManager* interruptManager)
 {
 	this->interruptNumber = interruptNumber;
 	this->interruptManager = interruptManager;
@@ -17,7 +17,7 @@ InterruptHandler::InterruptHandler()
 		interruptManager->handlers[interruptNumber] = 0;
 }
 
-uint32_t InterruptHandler::HandleInterrupt(uint32_t esp)
+uint32 InterruptHandler::HandleInterrupt(uint32 esp)
 {
 	return esp;
 }
@@ -26,15 +26,15 @@ InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256]
 InterruptManager* InterruptManager::ActivateInterruptManager = 0;
 
 void InterruptManager::SetIterruptDescriptorTable(
-		uint8_t interruptNumber,
-		uint16_t gdt_codeSegmentSelectorOffset,
+		uint8 interruptNumber,
+		uint16 gdt_codeSegmentSelectorOffset,
 		void (*handler)(),
-		uint8_t DescriptorPrivilegeLevel,
-		uint8_t DescriptorType)
+		uint8 DescriptorPrivilegeLevel,
+		uint8 DescriptorType)
 {
-	const uint8_t IDT_DESC_PRESENT = 0x80;
-	interruptDescriptorTable[interruptNumber].handlerAddresLowBits = ((uint32_t)handler) & 0xFFFF;
-	interruptDescriptorTable[interruptNumber].handlerAddresHighBits = (((uint32_t)handler) >> 16) & 0xFFFF;
+	const uint8 IDT_DESC_PRESENT = 0x80;
+	interruptDescriptorTable[interruptNumber].handlerAddresLowBits = ((uint32)handler) & 0xFFFF;
+	interruptDescriptorTable[interruptNumber].handlerAddresHighBits = (((uint32)handler) >> 16) & 0xFFFF;
 	interruptDescriptorTable[interruptNumber].gdt_codeSegmentSelector = gdt_codeSegmentSelectorOffset;
 	interruptDescriptorTable[interruptNumber].access = IDT_DESC_PRESENT | DescriptorType | ((DescriptorPrivilegeLevel & 3) << 5);
 	interruptDescriptorTable[interruptNumber].reserved = 0;
@@ -46,9 +46,9 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 , picSlaveCommand(0xA0)
 , picSlaveData(0xA1)
 {
-	uint16_t CodeSegment = gdt->CodeSegmentSelector();
-	const uint8_t IDT_INTERRUPT_GATE = 0xE;
-	for (uint16_t i = 0; i < 256; ++i)
+	uint16 CodeSegment = gdt->CodeSegmentSelector();
+	const uint8 IDT_INTERRUPT_GATE = 0xE;
+	for (uint16 i = 0; i < 256; ++i)
 	{
 		handlers[i] = 0;
 		SetIterruptDescriptorTable(i, CodeSegment, &IgnoreInterruptRequest, 0, IDT_INTERRUPT_GATE);
@@ -112,7 +112,7 @@ InterruptManager::InterruptManager(GlobalDescriptorTable* gdt)
 
 	InterruptDescriptionTablePointer idt;
 	idt.size = 256 * sizeof(GateDescriptor) - 1;
-	idt.base = (uint32_t)interruptDescriptorTable;
+	idt.base = (uint32)interruptDescriptorTable;
 
 	asm volatile("lidt %0" : : "m" (idt));
 }
@@ -139,7 +139,7 @@ void InterruptManager::Deactivate()
 	}
 }
 
-uint32_t InterruptManager::handleInterrupt(uint8_t interruptNumber, uint32_t esp)
+uint32 InterruptManager::handleInterrupt(uint8 interruptNumber, uint32 esp)
 {
 	if (ActivateInterruptManager != 0)
 		return ActivateInterruptManager->DoHandleInterrupt(interruptNumber, esp);
@@ -159,7 +159,7 @@ void InterruptManager::clean_all_registers()
     );
 }
 
-void InterruptManager::isr_handler(uint8_t interruptNumber)
+void InterruptManager::isr_handler(uint8 interruptNumber)
 {
 	printf("Interrupt Service Routine handler ");
 	if (interruptNumber < 16)
@@ -191,16 +191,16 @@ void InterruptManager::isr_handler(uint8_t interruptNumber)
 		case 0x13: printf("SIMD Floating-Point Exception\n"); break;
 		default: printf("unknown ISR code\n"); break;
 	}
-	uint32_t esp;
+	uint32 esp;
 	asm(" mov %%esp, %0" : "=r" (esp));
 	printf("esp = 0x%x\n", esp);
-	print_stack((uint8_t*)esp);
+	print_stack((uint8*)esp);
 	printf("kernel panic\n");
 	clean_all_registers();
 	__asm__ ("hlt");
 }
 
-void InterruptManager::irq_handler(uint8_t interruptNumber)
+void InterruptManager::irq_handler(uint8 interruptNumber)
 {
 	printf("Interrupt Request handler ");
 	if (interruptNumber < 16)
@@ -229,7 +229,7 @@ void InterruptManager::irq_handler(uint8_t interruptNumber)
 	}
 }
 
-uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t esp)
+uint32 InterruptManager::DoHandleInterrupt(uint8 interruptNumber, uint32 esp)
 {
 	if (handlers[interruptNumber] != 0)
 	{
@@ -257,3 +257,5 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interruptNumber, uint32_t e
 
 	return esp;
 }
+
+} // namespace crowos::hardware

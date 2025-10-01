@@ -7,11 +7,17 @@ namespace crowos
 	{
 
 		void printf(const char *fmt, ...);
-		void print_stack(void* ptr = (void*)0x800);
-		void print_42();
+		void print_stack(void* ptr = (void*)0x800);		
 		void print_shell_promt();
 
-	}
-}
+		void print_42();
+
+	} // namespace common
+
+	using common::printf;
+	using common::print_stack;
+	using common::print_shell_promt;
+
+} // namespace crowos
 
 #endif

@@ -3,11 +3,8 @@
 #include <hardware/port.h>
 #include <shell/shell.h>
 
-using namespace crowos::vga;
-using namespace crowos::devicemanager;
-using namespace crowos::common;
-using namespace crowos::hardware;
-using namespace crowos::shell;
+namespace crowos::devicemanager
+{
 
 ScreenManager& ScreenManager::getInstance()
 {
@@ -15,23 +12,23 @@ ScreenManager& ScreenManager::getInstance()
 	static bool initialized = false;
 	if (!initialized)
 	{
-		instance.my_screen = &(Screen::getInstance());
+		instance.my_screen = &(vga::Screen::getInstance());
 		initialized = true;
 	}
 	return instance;
 }
 
-void	ScreenManager::ChangeDisplay(uint8_t n)
+void	ScreenManager::ChangeDisplay(uint8 n)
 {
 	my_screen->ChangeDisplay(n);
 }
 
-void	ScreenManager::put_color_char(char c, uint8_t text_color, uint8_t back_color)
+void	ScreenManager::put_color_char(char c, uint8 text_color, uint8 back_color)
 {
 	my_screen->putchar(c, text_color, back_color);
 }
 
-void	ScreenManager::put_color_char(char c, uint8_t text_color)
+void	ScreenManager::put_color_char(char c, uint8 text_color)
 {
 	my_screen->putchar(c, text_color);
 }
@@ -51,6 +48,12 @@ void	ScreenManager::check_command()
 	char command[10 + 1]; //max 10 symbol
 	my_screen->get_buffer(command); //get_line
 	putchar('\n');
-	Shell::exec_cmd(command, my_screen);
-
+	shell::Shell::exec_cmd(command, my_screen);
 }
+
+void	ScreenManager::mouse_position(int8 x, int8 y)
+{
+	my_screen->mouse_position(x,y);
+}
+
+} // crowos::devicemanager

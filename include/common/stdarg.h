@@ -1,6 +1,7 @@
 #ifndef __CROWOS__STDARG_H
 #define __CROWOS__STDARG_H
 
+// standart C library stdarg.h
 namespace crowos
 {
 	namespace common
@@ -28,7 +29,8 @@ namespace crowos
 		typedef __builtin_va_list __gnuc_va_list;
 		#endif
 
-	}
-}
+	} // namespace common
+
+} // namespace crowos
 
 #endif /* __STDARG_H */

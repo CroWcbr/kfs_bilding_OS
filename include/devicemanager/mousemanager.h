@@ -4,25 +4,27 @@
 #include <drivers/mouse.h>
 #include <vga/screen.h>
 #include <common/types.h>
+#include <devicemanager/screenmanager.h>
 
 namespace crowos
 {
 	namespace devicemanager
 	{
 
-		class MouseToConsole : public crowos::drivers::MouseEventHandler
+		class MouseToConsole : public drivers::MouseEventHandler
 		{
 		private:
-			crowos::common::int8_t x;
-			crowos::common::int8_t y;
+			ScreenManager*	my_screen;
+			int8			x;
+			int8			y;
 
 		public:
 			MouseToConsole();
-			void OnMouseMove(int xoffset, int yoffset);
+			void OnMouseMove(int8 xoffset, int8 yoffset);
 		};
 
-	}
+	} // namespace devicemanager
 
-}
+} // namespace crowos
 
 #endif

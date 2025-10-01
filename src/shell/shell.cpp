@@ -3,12 +3,10 @@
 #include <common/types.h>
 #include <common/stdio.h>
 
-using namespace crowos::shell;
-using namespace crowos::vga;
-using namespace crowos::hardware;
-using namespace crowos::common;
+namespace crowos::shell
+{
 
-void Shell::exec_cmd(char *command, Screen *my_screen)
+void Shell::exec_cmd(char *command, vga::Screen *my_screen)
 {
     if (!*command)
         ;
@@ -21,7 +19,7 @@ void Shell::exec_cmd(char *command, Screen *my_screen)
     {
         int x;
         __asm__ ("mov %%esp, %0" : "=r"(x) ::); // stack pointer
-        print_stack((uint8_t*)x);
+        print_stack((uint8*)x);
     }
     else if (command[0] == 'r' && \
             command[1] == 'e' && \
@@ -31,9 +29,9 @@ void Shell::exec_cmd(char *command, Screen *my_screen)
             command[5] == 't' && \
             command[6] == 0)
     {
-        uint8_t good = 0x02;
+        uint8 good = 0x02;
 
-        Port16bit dataport(0x64);
+        hardware::Port16bit dataport(0x64);
         // Poll bit 1 of the Status Register ("Input buffer empty/full") until it becomes clear.
         while (good & 0x02)
             good = dataport.Read();
@@ -52,7 +50,7 @@ void Shell::exec_cmd(char *command, Screen *my_screen)
             command[7] == 'n' && \
             command[8] == 0)
     {
-        Port16bit dataport(0x604);
+        hardware::Port16bit dataport(0x604);
         dataport.Write(0x2000); // for QEMU
         // dataport.Write(0x3400); // for VM
     }
@@ -96,3 +94,5 @@ kernel command :
 	else
 		printf("It is not command!\n");
 }
+
+} // namespace crowos::shell

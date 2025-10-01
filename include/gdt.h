@@ -20,17 +20,17 @@ GDT Layout in memory:
 	7       6       5       4       3       2       1       0
 		^       ^---------- access rights
 */
-			crowos::common::uint16_t	limit_lo;		// 0, 1
-			crowos::common::uint16_t	base_lo;		// 2, 3
-			crowos::common::uint8_t		base_hi;		// 4
-			crowos::common::uint8_t		type;			// 5
-			crowos::common::uint8_t		flags_limit_hi;	// 6
-			crowos::common::uint8_t		base_vhi;		// 7
+			uint16	limit_lo;		// 0, 1
+			uint16	base_lo;		// 2, 3
+			uint8	base_hi;		// 4
+			uint8	type;			// 5
+			uint8	flags_limit_hi;	// 6
+			uint8	base_vhi;		// 7
 		public:
-			SegmentDescriptior(crowos::common::uint32_t base, crowos::common::uint32_t limit, crowos::common::uint8_t type);
+			SegmentDescriptior(uint32 base, uint32 limit, uint8 type);
 
-			crowos::common::uint32_t	Base();
-			crowos::common::uint32_t	Limit();
+			uint32	Base();
+			uint32	Limit();
 		} __attribute__((packed));
 
 		SegmentDescriptior nullSegmentSelector;		// empty
@@ -42,9 +42,10 @@ GDT Layout in memory:
 		GlobalDescriptorTable();
 		~GlobalDescriptorTable();
 
-		crowos::common::uint16_t	CodeSegmentSelector();
-		crowos::common::uint16_t	DataSegmentSelector();
+		uint16	CodeSegmentSelector();
+		uint16	DataSegmentSelector();
 	};
-}
+
+} // namespace crowos
 
 #endif

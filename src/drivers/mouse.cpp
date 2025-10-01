@@ -1,8 +1,8 @@
 #include <drivers/mouse.h>
 
-using namespace crowos::common;
-using namespace crowos::drivers;
-using namespace crowos::hardware;
+namespace crowos::drivers
+{
+
 
 MouseEventHandler::MouseEventHandler()
 {
@@ -13,20 +13,20 @@ void MouseEventHandler::OnActivate()
 
 }
 
-void MouseEventHandler::OnMouseDown(uint8_t button)
+void MouseEventHandler::OnMouseDown(uint8 button)
 {
 }
 
-void MouseEventHandler::OnMouseUp(uint8_t button)
+void MouseEventHandler::OnMouseUp(uint8 button)
 {
 }
 
-void MouseEventHandler::OnMouseMove(int x, int y)
+void MouseEventHandler::OnMouseMove(int8 x, int8 y)
 {
 
 }
 
-MouseDriver::MouseDriver(InterruptManager* manager, MouseEventHandler *handler)
+MouseDriver::MouseDriver(hardware::InterruptManager* manager, MouseEventHandler *handler)
 : InterruptHandler(0x2C, manager)
 , dataport(0x60)
 , commandport(0x64)
@@ -44,7 +44,7 @@ void MouseDriver::Activate()
 
 	commandport.Write(0xA8);
 	commandport.Write(0x20);
-	uint8_t status = dataport.Read() | 2;
+	uint8 status = dataport.Read() | 2;
 	commandport.Write(0x60);
 	dataport.Write(status);
 
@@ -53,9 +53,9 @@ void MouseDriver::Activate()
 	dataport.Read();
 }
 
-uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
+uint32 MouseDriver::HandleInterrupt(uint32 esp)
 {
-	uint8_t status = commandport.Read();
+	uint8 status = commandport.Read();
 	if (!(status & 0x20))
 		return esp;
 
@@ -85,7 +85,7 @@ uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
 			handler->OnMouseMove(buffer[1], -buffer[2]);
 		}
 
-		for (uint8_t i = 0; i < 3; ++i)
+		for (uint8 i = 0; i < 3; ++i)
 		{
 			if ((buffer[0] & (0x01 << i)) != (buttons & (0x01 << i)))
 			{
@@ -93,10 +93,6 @@ uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
 					handler->OnMouseUp(i + 1);
 				else
 					handler->OnMouseDown(i + 1);
-				// press
-				// VideoMemory[80 * y + x] = ((VideoMemory[80 * y + x] & 0xF000) >> 4)
-				// 						| ((VideoMemory[80 * y + x] & 0x0F00) << 4)
-				// 						| (VideoMemory[80 * y + x] & 0x00FF);
 			}
 
 		}
@@ -105,3 +101,5 @@ uint32_t MouseDriver::HandleInterrupt(uint32_t esp)
 
 	return esp;
 }
+
+} // crowos::drivers

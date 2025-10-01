@@ -8,7 +8,8 @@ namespace crowos
 	namespace vga
 	{
 
-		enum Color : crowos::common::uint8_t {
+		enum Color : uint8
+		{
 			BLACK,
 			BLUE,
 			GREEN,
@@ -38,56 +39,67 @@ namespace crowos
 		private:
 			struct screen_info
 			{
-				crowos::common::uint8_t		x;
-				crowos::common::uint8_t		y;
-				crowos::common::int16_t		cursor_position;
-				crowos::common::uint16_t	display_buffer[WIDTH * HEIGHT];
-				crowos::common::int16_t		buffer_size;
-				crowos::common::uint8_t		text_color;
-				crowos::common::uint8_t		back_color;
-				crowos::common::uint8_t		promt_color;
+				uint8		x;
+				uint8		y;
+				int16		cursor_position;
+				uint16		display_buffer[WIDTH * HEIGHT];
+				int16		buffer_size;
+				uint8		text_color;
+				uint8		back_color;
+				uint8		promt_color;
+				uint8		mouse_color;
+				uint8		x_mouse;
+				uint8		y_mouse;
+				int16		mouse_position;
+				uint16		mouse_bg_saved;
 			};
 
 		protected:
-			crowos::common::uint16_t*		VideoMemory;
-			screen_info*					active_screen;
-			screen_info						screens[MAX_SCREEN];
-			static crowos::common::uint8_t	s_text_color;
-			static crowos::common::uint8_t	s_back_color;
+			uint16*			VideoMemory;
+			screen_info*	active_screen;
+			screen_info		screens[MAX_SCREEN];
+			static uint8	s_text_color;
+			static uint8	s_back_color;
+			static uint8	s_mouse_color;
 
 		private:
-			void	setDisplayData(crowos::common::uint16_t *data, crowos::common::uint8_t back_color);
-			void	copyFromTo(crowos::common::uint16_t *from, crowos::common::uint16_t *to);
+			void	setDisplayData(uint16 *data, uint8 back_color);
+			void	copyFromTo(uint16 *from, uint16 *to);
 
 			void	put_slash_n();
 			void	put_slash_b();
 			void	put_slash_t();
-			void	put_symbol(char c, crowos::common::uint8_t text_color, crowos::common::uint8_t back_color);
+			void	put_symbol(char c, uint8 text_color, uint8 back_color);
 			void	put_color_char(char c,
-									crowos::common::int16_t pos,
-									crowos::common::uint8_t text_color, 
-									crowos::common::uint8_t back_color);
+									int16 pos,
+									uint8 text_color, 
+									uint8 back_color);
 			void	update_cursor_position();
 			void	put_cursor_at();
-			void	port_byte_out(crowos::common::uint16_t port, crowos::common::uint8_t data);
+			void	port_byte_out(uint16 port, uint8 data);
 
 		public:
 			static Screen&	getInstance();
 
-			void 			ChangeDisplay(crowos::common::uint8_t n);
+			void 			ChangeDisplay(uint8 n);
 
 			void			putchar(char c,
-									crowos::common::uint8_t text_color = s_text_color,
-									crowos::common::uint8_t back_color = s_back_color);
+									uint8 text_color = s_text_color,
+									uint8 back_color = s_back_color);
 			
 			void			print_shell_promt();
 
 			bool			get_buffer(char *command);
 
 			void			clear();
+
+			void			mouse_position(int8 x, int8 y);
+			void			draw_mouse(bool visible);
+			void 			init_cursor();
 		};
 
-	}
-}
+	} // namespace vga
+
+} // namespace crowos
 
 #endif

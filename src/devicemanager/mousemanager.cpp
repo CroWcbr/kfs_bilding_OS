@@ -1,26 +1,15 @@
 #include <devicemanager/mousemanager.h>
 
-using namespace crowos::devicemanager;
-using namespace crowos::common;
+namespace crowos::devicemanager
+{
 
 MouseToConsole::MouseToConsole()
 {
-	uint16_t* VideoMemory = (uint16_t*)0xb8000;
-	x = 40;
-	y = 12;
-	VideoMemory[80 * y + x] = ((VideoMemory[80 * y + x] & 0xF000) >> 4)
-							| ((VideoMemory[80 * y + x] & 0x0F00) << 4)
-							| (VideoMemory[80 * y + x] & 0x00FF);
+	my_screen = &(ScreenManager::getInstance());
 }
 
-void MouseToConsole::OnMouseMove(int xoffset, int yoffset)
+void MouseToConsole::OnMouseMove(int8 xoffset, int8 yoffset)
 {
-	uint16_t* VideoMemory = (uint16_t*)0xb8000;
-
-	VideoMemory[80 * y + x] = ((VideoMemory[80 * y + x] & 0xF000) >> 4)
-							| ((VideoMemory[80 * y + x] & 0x0F00) << 4)
-							| (VideoMemory[80 * y + x] & 0x00FF);
-
 	x += xoffset;
 
 	if (x < 0)
@@ -34,7 +23,7 @@ void MouseToConsole::OnMouseMove(int xoffset, int yoffset)
 	if (y > 25)
 		y = 24;
 
-	VideoMemory[80 * y + x] = ((VideoMemory[80 * y + x] & 0xF000) >> 4)
-							| ((VideoMemory[80 * y + x] & 0x0F00) << 4)
-							| (VideoMemory[80 * y + x] & 0x00FF);
+	my_screen->mouse_position(x, y);
 }
+
+} // namespace crowos::devicemanager

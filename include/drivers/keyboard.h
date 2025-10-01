@@ -15,24 +15,27 @@ namespace crowos
 		public:
 			KeyboardEventHandler();
 
-			virtual void OnKeyDown(crowos::common::uint8_t);
-			virtual void OnKeyUp(crowos::common::uint8_t);
+			virtual void OnKeyDown(uint8);
+			virtual void OnKeyUp(uint8);
 		};
 
-		class KeyboardDriver : public crowos::hardware::InterruptHandler, public Driver
+		class KeyboardDriver : public hardware::InterruptHandler, public Driver
 		{
-			crowos::hardware::Port8bit dataport;
-			crowos::hardware::Port8bit commandport;
+			hardware::Port8bit dataport;
+			hardware::Port8bit commandport;
 
 			KeyboardEventHandler* handler;
 
 		public:
-			KeyboardDriver(crowos::hardware::InterruptManager* manager, KeyboardEventHandler *handler);
+			KeyboardDriver(hardware::InterruptManager* manager, KeyboardEventHandler *handler);
 			~KeyboardDriver();
 
-			virtual crowos::common::uint32_t HandleInterrupt(crowos::common::uint32_t esp);
+			virtual uint32 HandleInterrupt(uint32 esp);
 			virtual void Activate();
 		};
-	}
-}
+
+	} // namespace drivers
+
+} // namespace crowos
+
 #endif

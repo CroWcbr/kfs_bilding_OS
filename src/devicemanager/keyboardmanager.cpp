@@ -1,8 +1,8 @@
 #include <devicemanager/keyboardmanager.h>
 #include <common/stdio.h>
 
-using namespace crowos::devicemanager;
-using namespace crowos::common;
+namespace crowos::devicemanager
+{
 
 PrintfKeyboardEventHandler::PrintfKeyboardEventHandler()
 {
@@ -25,7 +25,7 @@ void PrintfKeyboardEventHandler::chooseKeyLetter(char key[2])
 	my_screen->putchar(key[pos]);
 }
 
-void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
+void PrintfKeyboardEventHandler::OnKeyDown(uint8 key)
 {
 	switch (key)
 	{
@@ -109,7 +109,7 @@ void PrintfKeyboardEventHandler::OnKeyDown(uint8_t key)
 
 }
 
-void PrintfKeyboardEventHandler::OnKeyUp(uint8_t key)
+void PrintfKeyboardEventHandler::OnKeyUp(uint8 key)
 {
 	switch (key - 0x80) // the same code as KeyDown
 	{
@@ -123,3 +123,5 @@ void PrintfKeyboardEventHandler::OnKeyUp(uint8_t key)
 			break;
 	}
 }
+
+} // namespace crowos::devicemanager

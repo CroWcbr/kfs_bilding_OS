@@ -10,51 +10,53 @@ namespace crowos
 		class Port
 		{
 		protected:
-			crowos::common::uint16_t	portnumber;
+			uint16	portnumber;
 
-			Port(crowos::common::uint16_t portnumber);
+			Port(uint16 portnumber);
 			~Port();
 		};
 
 		class Port8bit : public Port
 		{
 		public:
-			Port8bit(crowos::common::uint16_t portnumber);
+			Port8bit(uint16 portnumber);
 			~Port8bit();
 
-			virtual void		Write(crowos::common::uint8_t data);
-			virtual crowos::common::uint8_t		Read();
+			virtual void		Write(uint8 data);
+			virtual uint8		Read();
 		};
 
 		class Port8bitSlow: public Port8bit
 		{
 		public:
-			Port8bitSlow(crowos::common::uint16_t portnumber);
+			Port8bitSlow(uint16 portnumber);
 			~Port8bitSlow();
 
-			virtual void		Write(crowos::common::uint8_t data);
+			virtual void		Write(uint8 data);
 		};
 
 		class Port16bit : public Port
 		{
 		public:
-			Port16bit(crowos::common::uint16_t portnumber);
+			Port16bit(uint16 portnumber);
 			~Port16bit();
 
-			virtual void		Write(crowos::common::uint16_t data);
-			virtual crowos::common::uint16_t	Read();
+			virtual void		Write(uint16 data);
+			virtual uint16	Read();
 		};
 
 		class Port32bit : public Port
 		{
 		public:
-			Port32bit(crowos::common::uint16_t portnumber);
+			Port32bit(uint16 portnumber);
 			~Port32bit();
 
-			virtual void		Write(crowos::common::uint32_t data);
-			virtual crowos::common::uint32_t	Read();
+			virtual void	Write(uint32 data);
+			virtual uint32	Read();
 		};
-	}
-}
+
+	} // namespace hardware
+
+} // namespace crowos
 
 #endif

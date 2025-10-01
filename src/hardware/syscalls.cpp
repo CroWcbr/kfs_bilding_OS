@@ -1,10 +1,10 @@
 #include <hardware/syscalls.h>
 #include <common/stdio.h>
 
-using namespace crowos::common;
-using namespace crowos::hardware;
+namespace crowos::hardware
+{
 
-SyscallHandler::SyscallHandler(InterruptManager* interruptManager, uint8_t InterruptNumber)
+SyscallHandler::SyscallHandler(InterruptManager* interruptManager, uint8 InterruptNumber)
 :InterruptHandler(InterruptNumber + 0x20, interruptManager)
 {
 }
@@ -13,7 +13,7 @@ SyscallHandler::~SyscallHandler()
 {
 }
 
-uint32_t SyscallHandler::HandleInterrupt(uint32_t esp)
+uint32 SyscallHandler::HandleInterrupt(uint32 esp)
 {
     CPUState* cpu = (CPUState*)esp;
     printf("eax : %u\n", cpu->eax);
@@ -41,3 +41,4 @@ uint32_t SyscallHandler::HandleInterrupt(uint32_t esp)
     return esp;
 }
 
+} // namespace crowos::hardware

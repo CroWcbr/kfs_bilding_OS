@@ -1,81 +1,86 @@
 #include <hardware/port.h>
 
-using namespace crowos::common;
-using namespace crowos::hardware;
-
-Port::Port(uint16_t portnumber)
+namespace crowos
 {
-	this->portnumber = portnumber;
-}
+	namespace hardware
+	{
 
-Port::~Port()
-{}
+		Port::Port(uint16 portnumber)
+		{
+			this->portnumber = portnumber;
+		}
 
-Port8bit::Port8bit(uint16_t portnumber)
-: Port(portnumber)
-{}
+		Port::~Port()
+		{}
 
-Port8bit::~Port8bit()
-{}
+		Port8bit::Port8bit(uint16 portnumber)
+		: Port(portnumber)
+		{}
 
-void		Port8bit::Write(uint8_t data)
-{
-	__asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));
-}
+		Port8bit::~Port8bit()
+		{}
 
-uint8_t		Port8bit::Read()
-{
-	uint8_t result;
-	__asm__ volatile("inb %1, %0" : "=a" (result) : "Nd" (portnumber));
-	return result;
-}
+		void		Port8bit::Write(uint8 data)
+		{
+			__asm__ volatile("outb %0, %1" : : "a" (data), "Nd" (portnumber));
+		}
 
-Port8bitSlow::Port8bitSlow(uint16_t portnumber)
-: Port8bit(portnumber)
-{}
+		uint8		Port8bit::Read()
+		{
+			uint8 result;
+			__asm__ volatile("inb %1, %0" : "=a" (result) : "Nd" (portnumber));
+			return result;
+		}
 
-Port8bitSlow::~Port8bitSlow()
-{}
+		Port8bitSlow::Port8bitSlow(uint16 portnumber)
+		: Port8bit(portnumber)
+		{}
 
-void		Port8bitSlow::Write(uint8_t data)
-{
-	__asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : : "a" (data), "Nd" (portnumber));
-}
+		Port8bitSlow::~Port8bitSlow()
+		{}
 
-Port16bit::Port16bit(uint16_t portnumber)
-: Port(portnumber)
-{}
+		void		Port8bitSlow::Write(uint8 data)
+		{
+			__asm__ volatile("outb %0, %1\njmp 1f\n1: jmp 1f\n1:" : : "a" (data), "Nd" (portnumber));
+		}
 
-Port16bit::~Port16bit()
-{}
+		Port16bit::Port16bit(uint16 portnumber)
+		: Port(portnumber)
+		{}
 
-void		Port16bit::Write(uint16_t data)
-{
-	__asm__ volatile("outw %0, %1" : : "a" (data), "Nd" (portnumber));
-}
+		Port16bit::~Port16bit()
+		{}
 
-uint16_t		Port16bit::Read()
-{
-	uint16_t result;
-	__asm__ volatile("inw %1, %0" : "=a" (result) : "Nd" (portnumber));
-	return result;
-}
+		void		Port16bit::Write(uint16 data)
+		{
+			__asm__ volatile("outw %0, %1" : : "a" (data), "Nd" (portnumber));
+		}
 
-Port32bit::Port32bit(uint16_t portnumber)
-: Port(portnumber)
-{}
+		uint16		Port16bit::Read()
+		{
+			uint16 result;
+			__asm__ volatile("inw %1, %0" : "=a" (result) : "Nd" (portnumber));
+			return result;
+		}
 
-Port32bit::~Port32bit()
-{}
+		Port32bit::Port32bit(uint16 portnumber)
+		: Port(portnumber)
+		{}
 
-void		Port32bit::Write(uint32_t data)
-{
-	__asm__ volatile("outl %0, %1" : : "a" (data), "Nd" (portnumber));
-}
+		Port32bit::~Port32bit()
+		{}
 
-uint32_t		Port32bit::Read()
-{
-	uint32_t result;
-	__asm__ volatile("inl %1, %0" : "=a" (result) : "Nd" (portnumber));
-	return result;
+		void		Port32bit::Write(uint32 data)
+		{
+			__asm__ volatile("outl %0, %1" : : "a" (data), "Nd" (portnumber));
+		}
+
+		uint32		Port32bit::Read()
+		{
+			uint32 result;
+			__asm__ volatile("inl %1, %0" : "=a" (result) : "Nd" (portnumber));
+			return result;
+		}
+
+	}
 }

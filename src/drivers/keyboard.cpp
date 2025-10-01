@@ -1,20 +1,19 @@
 #include <drivers/keyboard.h>
 #include <common/stdio.h>
 
-using namespace crowos::common;
-using namespace crowos::drivers;
-using namespace crowos::hardware;
+namespace crowos::drivers
+{
 
 KeyboardEventHandler::KeyboardEventHandler()
 {}
 
-void KeyboardEventHandler::OnKeyDown(uint8_t)
+void KeyboardEventHandler::OnKeyDown(uint8)
 {}
 
-void KeyboardEventHandler::OnKeyUp(uint8_t)
+void KeyboardEventHandler::OnKeyUp(uint8)
 {}
 
-KeyboardDriver::KeyboardDriver(InterruptManager* manager, KeyboardEventHandler *handler)
+KeyboardDriver::KeyboardDriver(hardware::InterruptManager* manager, KeyboardEventHandler *handler)
 : InterruptHandler(0x21, manager)
 , dataport(0x60)
 , commandport(0x64)
@@ -29,16 +28,16 @@ void KeyboardDriver::Activate()
 
 	commandport.Write(0xAE);
 	commandport.Write(0x20);
-	uint8_t status = (dataport.Read() | 1) & ~0x10;
+	uint8 status = (dataport.Read() | 1) & ~0x10;
 	commandport.Write(0x60);
 	dataport.Write(status);
 
 	dataport.Write(0xF4);
 }
 
-uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
+uint32 KeyboardDriver::HandleInterrupt(uint32 esp)
 {
-	uint8_t key = dataport.Read();
+	uint8 key = dataport.Read();
 
 	// printf("\nHandleInterrupt 0x%X\n", key);
 
@@ -54,3 +53,5 @@ uint32_t KeyboardDriver::HandleInterrupt(uint32_t esp)
 
 	return esp;
 }
+
+} // namespace crowos::drivers

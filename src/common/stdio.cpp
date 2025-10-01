@@ -2,13 +2,13 @@
 #include <common/stdarg.h>
 #include <devicemanager/screenmanager.h>
 
-using namespace crowos::devicemanager;
-
 namespace crowos
 {
 	namespace common
 	{
 
+	namespace
+	{
 		#define PRINTF_STATE_NORMAL			0
 		#define PRINTF_STATE_LENGTH			1
 		#define PRINTF_STATE_LENGTH_SHORT	2
@@ -25,23 +25,17 @@ namespace crowos
 
 		static void	putchar(char c)
 		{
-			ScreenManager& my_screen = ScreenManager::getInstance();
-
-			my_screen.putchar(c);
+			devicemanager::ScreenManager::getInstance().putchar(c);
 		}
 
 		static void	putstr(const char* str)
 		{
-			ScreenManager& my_screen = ScreenManager::getInstance();
-
 			for(int i = 0; str[i] != '\0'; ++i)
-				my_screen.putchar(str[i]);
+				putchar(str[i]);
 		}
 
 		static void	printf_unsigned_long(unsigned long number, int radix)
 		{
-			ScreenManager& my_screen = ScreenManager::getInstance();
-
 			char buffer[32];
 			int pos = 0;
 
@@ -53,7 +47,7 @@ namespace crowos
 			} while (number > 0);
 
 			while (--pos >= 0)
-				my_screen.putchar(buffer[pos]);
+				putchar(buffer[pos]);
 		}
 
 		static void	printf_signed_long(long number, int radix)
@@ -91,8 +85,6 @@ namespace crowos
 
 		static void	printf_unsigned_long_long(unsigned long long number, int radix)
 		{
-			ScreenManager& my_screen = ScreenManager::getInstance();
-
 			char buffer[64];
 			int pos = 0;
 
@@ -105,7 +97,7 @@ namespace crowos
 			} while (number > 0);
 
 			while (--pos >= 0)
-				my_screen.putchar(buffer[pos]);
+				putchar(buffer[pos]);
 		}
 
 		static void	printf_signed_long_long(long long number, int radix)
@@ -119,6 +111,7 @@ namespace crowos
 				printf_unsigned_long_long(number, radix);
 		}
 
+	} // namespace
 
 		void	printf(const char* fmt, ...)
 		{
@@ -276,5 +269,6 @@ namespace crowos
 			}
 		}
 
-	}
-}
+	} // namespace common
+
+} // namespace crowos

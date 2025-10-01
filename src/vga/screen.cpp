@@ -1,10 +1,10 @@
 #include <vga/screen.h>
 
-using namespace crowos::vga;
-using namespace crowos::common;
-
-crowos::common::uint8_t Screen::s_text_color;
-crowos::common::uint8_t Screen::s_back_color;
+namespace crowos::vga
+{
+uint8 Screen::s_text_color;
+uint8 Screen::s_back_color;
+uint8 Screen::s_mouse_color;
 
 Screen& Screen::getInstance()
 {
@@ -12,17 +12,23 @@ Screen& Screen::getInstance()
 	static bool initialized = false;
 	if (!initialized)
 	{
-		instance.VideoMemory = (uint16_t*)0xb8000;
+		instance.VideoMemory = (uint16*)0xb8000;
 
 		instance.screens[0].text_color = Color::WHITE;
 		instance.screens[0].back_color = Color::BLACK;
 		instance.screens[0].promt_color = Color::GREEN;
+		instance.screens[0].mouse_color = Color::LIGHT_GREEN;
+
 		instance.screens[1].text_color = Color::DARK_GRAY;
 		instance.screens[1].back_color = Color::BLUE;
 		instance.screens[1].promt_color = Color::WHITE;
+		instance.screens[1].mouse_color = Color::LIGHT_MAGENTA;
+
 		instance.screens[2].text_color = Color::LIGHT_CYAN;
 		instance.screens[2].back_color = Color::DARK_GRAY;
 		instance.screens[2].promt_color = Color::GREEN;
+		instance.screens[2].mouse_color = Color::BLUE;
+
 
 		for (int i = 0; i < MAX_SCREEN; ++i)
 		{
@@ -31,30 +37,47 @@ Screen& Screen::getInstance()
 			instance.screens[i].cursor_position = 0;
 			instance.setDisplayData(instance.screens[i].display_buffer, instance.screens[i].back_color);
 			instance.screens[i].buffer_size = 0;
+			instance.screens[i].x_mouse = 40;
+			instance.screens[i].y_mouse = 12;
+			instance.screens[i].mouse_position = instance.screens[i].y_mouse * WIDTH + instance.screens[i].x_mouse;
+			instance.screens[i].mouse_bg_saved = instance.screens[i].back_color;
+
 		}
 		instance.active_screen = &(instance.screens[0]);
 		instance.copyFromTo(instance.active_screen->display_buffer, instance.VideoMemory);
 		instance.s_text_color = instance.screens[0].text_color;
 		instance.s_back_color = instance.screens[0].back_color;
+		instance.s_mouse_color = instance.screens[0].mouse_color;
+		instance.init_cursor();
 		initialized = true;
 	}
 	return instance;
 }
 
-void	Screen::setDisplayData(uint16_t *data, uint8_t back_color)
+void Screen::init_cursor()
 {
-	uint8_t text_color = 0xF;
+    port_byte_out(0x3D4, 0x0A);
+    port_byte_out(0x3D5, 0x00);
+    port_byte_out(0x3D4, 0x0B);
+    port_byte_out(0x3D5, 0x0F);
+
+    put_cursor_at();
+}
+
+void	Screen::setDisplayData(uint16 *data, uint8 back_color)
+{
+	uint8 text_color = 0xF;
 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
 		data[i] = ((text_color | (back_color << 4)) << 8) | ' ';
 }
 
-void Screen::copyFromTo(uint16_t *from, uint16_t *to)
+void Screen::copyFromTo(uint16 *from, uint16 *to)
 {
 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
 		to[i] = from[i];
 }
 
-void	Screen::ChangeDisplay(uint8_t n)
+void	Screen::ChangeDisplay(uint8 n)
 {
 	if (n > MAX_SCREEN || active_screen == &screens[n])
 		return ;
@@ -64,13 +87,14 @@ void	Screen::ChangeDisplay(uint8_t n)
 	copyFromTo(active_screen->display_buffer, VideoMemory);
 	s_text_color = active_screen->text_color;
 	s_back_color = active_screen->back_color;
+	s_mouse_color = active_screen->mouse_color;
 	if (active_screen->x == 0 && active_screen->buffer_size == 0)
 		print_shell_promt();
 	else
 		put_cursor_at();
 }
 
-void	Screen::putchar(char c, uint8_t text_color, uint8_t back_color)
+void	Screen::putchar(char c, uint8 text_color, uint8 back_color)
 {
 	switch(c)
 	{
@@ -90,14 +114,14 @@ void	Screen::putchar(char c, uint8_t text_color, uint8_t back_color)
 	update_cursor_position();
 }
 
-void Screen::put_color_char(char c, int16_t pos, uint8_t text_color, uint8_t back_color)
+void Screen::put_color_char(char c, int16 pos, uint8 text_color, uint8 back_color)
 {
 	// Bit:     | 15 14 13 12 11 10 9 8 | 7 6 5 4 | 3 2 1 0 |
 	// Content: | ASCII                 | FG      | BG      |
 	VideoMemory[pos] = ((text_color | (back_color << 4)) << 8) | c;
 }
 
-void Screen::put_symbol(char c, uint8_t text_color, uint8_t back_color)
+void Screen::put_symbol(char c, uint8 text_color, uint8 back_color)
 {
 	put_color_char(c, active_screen->cursor_position, text_color, back_color);
 	active_screen->x++;
@@ -164,7 +188,7 @@ void	Screen::update_cursor_position()
 	put_cursor_at();
 }
 
-void Screen::port_byte_out(uint16_t port, uint8_t data)
+void Screen::port_byte_out(uint16 port, uint8 data)
 {
 	// work like Class port
 	asm volatile ("outb %0, %1" :: "a"(data), "Nd"(port));
@@ -197,7 +221,7 @@ bool	Screen::get_buffer(char *command)
 	int pos = active_screen->cursor_position - active_screen->buffer_size;
 	int i = 0;
 	for(; i < active_screen->buffer_size; ++i)
-		command[i] = (uint8_t)VideoMemory[pos + i];
+		command[i] = (uint8)VideoMemory[pos + i];
 	command[i] = 0;
 	return true;
 }
@@ -211,3 +235,37 @@ void	Screen::clear()
 	active_screen->buffer_size = 0;
 	put_cursor_at();
 }
+
+void	Screen::mouse_position(int8 x, int8 y)
+{
+	draw_mouse(false);
+
+	active_screen->x_mouse = x;
+	active_screen->y_mouse = y;
+
+	draw_mouse(true);
+}
+
+void Screen::draw_mouse(bool visible)
+{
+    int pos = active_screen->y_mouse * WIDTH + active_screen->x_mouse;
+
+    uint16 current = VideoMemory[pos];
+    uint8 symbol = current & 0xFF;
+    uint8 fg = (current >> 8) & 0x0F;
+    uint8 bg = (current >> 12) & 0x0F;
+
+    if (visible)
+    {
+        active_screen->mouse_bg_saved = bg;
+        bg = s_mouse_color;
+    }
+    else
+    {
+        bg = active_screen->mouse_bg_saved;
+    }
+
+    VideoMemory[pos] = ((fg | (bg << 4)) << 8) | symbol;
+}
+
+} // namespace crowos::vga

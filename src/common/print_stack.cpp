@@ -1,8 +1,6 @@
 #include <common/stdio.h>
 #include <common/types.h>
 
-using namespace crowos::common;
-
 namespace crowos
 {
 	namespace common
@@ -16,7 +14,7 @@ namespace crowos
 				return;
 			}
 
-			uint8_t* test = (uint8_t*)ptr;
+			uint8* test = (uint8*)ptr;
 			int value_in_row = 16;
 			int numBytes = 10 * value_in_row;
 
@@ -30,13 +28,12 @@ namespace crowos
 
 				if ((i != 0 && (i + 1) % value_in_row == 0) || i == numBytes - 1)
 					for (int ii = i - 16; ii <  i; ++ii)
-						printf("%c", (char)test[ii] <= 32 ? '.' : (char)test[ii]);			
+						printf("%c", ((char)test[ii] <= 32) ? '.' : (char)test[ii]);		
 
 				if (i != 0 && (i + 1) % value_in_row == 0 && i != numBytes - 1)
 					printf("\n0x%p : ", &test[i + 1]);
 			}
 			printf("\n");
 		}
-
 	}
 }

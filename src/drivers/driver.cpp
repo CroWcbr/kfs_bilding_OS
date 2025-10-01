@@ -1,6 +1,7 @@
-
 #include <drivers/driver.h>
-using namespace crowos::drivers;
+
+namespace crowos::drivers
+{
 
 Driver::Driver()
 {
@@ -37,3 +38,5 @@ void DriverManager::ActivateAll()
 	for (int i = 0; i < numDrivers; ++i)
 		drivers[i]->Activate();
 }
+
+} // crowos::drivers

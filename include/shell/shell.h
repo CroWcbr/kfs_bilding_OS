@@ -15,10 +15,11 @@ namespace crowos
         private:
 
         public:
-            static void exec_cmd(char *command, crowos::vga::Screen *my_screen);
+            static void exec_cmd(char *command, vga::Screen *my_screen);
         };
 
-	}
-}
+	} // namespace shell
+
+} // namespace crowos
 
 #endif

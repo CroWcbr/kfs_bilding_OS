@@ -9,12 +9,6 @@
 #include <devicemanager/mousemanager.h>
 #include <common/stdio.h>
 
-using namespace crowos;
-using namespace crowos::common;
-using namespace crowos::drivers;
-using namespace crowos::hardware;
-using namespace crowos::devicemanager;
-
 typedef void (*constructor)();
 constructor start_ctors;
 constructor end_ctors;
@@ -23,34 +17,36 @@ extern "C" void callConstructors()
 	for(constructor* i = &start_ctors; i != &end_ctors; i++)
 		(*i)();
 }
+namespace crowos
+{
 
-extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
+extern "C" void kernelMain(void *multiboot_structure, uint32 magicnumber)
 {
 	GlobalDescriptorTable gdt;
-	InterruptManager interrupts(&gdt);
-	SyscallHandler syscalls(&interrupts, 0x80);
+	hardware::InterruptManager interrupts(&gdt);
+	hardware::SyscallHandler syscalls(&interrupts, 0x80);
 
-	DriverManager drvManager;
+	drivers::DriverManager drvManager;
 
 // for myself (problem with change screen, multiple cursor - need use class screen for print)
-	// MouseToConsole mousehandler;
-	// MouseDriver mouse(&interrupts, &mousehandler);
-	// drvManager.AddDriver(&mouse);
+	devicemanager::MouseToConsole mousehandler;
+	drivers::MouseDriver mouse(&interrupts, &mousehandler);
+	drvManager.AddDriver(&mouse);
 
-	PrintfKeyboardEventHandler kbhandler;
-	KeyboardDriver keyboard(&interrupts, &kbhandler);
+	devicemanager::PrintfKeyboardEventHandler kbhandler;
+	drivers::KeyboardDriver keyboard(&interrupts, &kbhandler);
 	drvManager.AddDriver(&keyboard);
 
 	drvManager.ActivateAll();
 	interrupts.Activate();
 
 // kfs-1 demonstration
-	// print_42();
-	// printf("%s : %d", "this is ", 5);
+	// common::print_42();
+	// printf("%s : %d\n", "this is ", 5);
 
 // kfs-2 demonstration
 	// print_stack((void*)0);
-	// print_stack((void*)0x800);
+	// print_stack((void*)0x00000800);
 	// print_stack((void*)&gdt);
 	// print_stack((void*)0x1);
 
@@ -65,4 +61,6 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 	print_shell_promt();
 	while(1)
 		;
+}
+
 }

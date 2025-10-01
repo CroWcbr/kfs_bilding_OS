@@ -1,9 +1,7 @@
 #include <common/types.h>
 #include <devicemanager/screenmanager.h>
 
-using namespace crowos::devicemanager;
-
-namespace crowos
+namespace crowos::common
 {
 	namespace common
 	{
@@ -17,7 +15,7 @@ namespace crowos
 
 		void print_42()
 		{
-			ScreenManager& my_screen = ScreenManager::getInstance();
+			devicemanager::ScreenManager& my_screen = devicemanager::ScreenManager::getInstance();
 			const char *kfs = R"(
 ##         #######     ##    ## ########  ######  
 ##    ##  ##     ##    ##   ##  ##       ##    ## 
@@ -37,5 +35,6 @@ namespace crowos
 			}
 		}
 
-	}
-}
+	} // namespace common
+
+} // namespace crowos

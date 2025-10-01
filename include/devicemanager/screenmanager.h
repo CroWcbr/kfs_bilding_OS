@@ -11,22 +11,25 @@ namespace crowos
 		class ScreenManager
 		{
 		protected:
-			crowos::vga::Screen		*my_screen;
+			vga::Screen		*my_screen;
 
 		public:
 			static ScreenManager&	getInstance();
 
-			void			ChangeDisplay(crowos::common::uint8_t n);
+			void			ChangeDisplay(uint8 n);
 
 			void			print_shell_promt();
 			void			putchar(char c);
-			void			put_color_char(char c, crowos::common::uint8_t text_color, crowos::common::uint8_t back_color);
-			void			put_color_char(char c, crowos::common::uint8_t text_color);
+			void			put_color_char(char c, uint8 text_color, uint8 back_color);
+			void			put_color_char(char c, uint8 text_color);
 
 			void			check_command();
+
+			void			mouse_position(int8 x, int8 y);
 		};
 
-	}
-}
+	} // namespace devicemanager
+
+} // namespace crowos
 
 #endif
