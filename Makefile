@@ -30,6 +30,7 @@ SRC_CPP			=	gdt.cpp \
 					common/print_stack.cpp \
 					common/print_shell_promt.cpp \
 					common/print_42.cpp \
+					common/utils.cpp \
 					shell/shell.cpp \
 					kernel.cpp
 

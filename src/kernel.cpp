@@ -28,7 +28,6 @@ extern "C" void kernelMain(void *multiboot_structure, uint32 magicnumber)
 
 	drivers::DriverManager drvManager;
 
-// for myself (problem with change screen, multiple cursor - need use class screen for print)
 	devicemanager::MouseToConsole mousehandler;
 	drivers::MouseDriver mouse(&interrupts, &mousehandler);
 	drvManager.AddDriver(&mouse);
@@ -60,7 +59,9 @@ extern "C" void kernelMain(void *multiboot_structure, uint32 magicnumber)
 
 	print_shell_promt();
 	while(1)
-		;
+	{
+		asm volatile("hlt");
+	}
 }
 
-}
+} // namespace crowos

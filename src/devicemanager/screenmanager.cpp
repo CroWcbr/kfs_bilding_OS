@@ -48,7 +48,7 @@ void	ScreenManager::check_command()
 	char command[10 + 1]; //max 10 symbol
 	my_screen->get_buffer(command); //get_line
 	putchar('\n');
-	shell::Shell::exec_cmd(command, my_screen);
+	shell::Shell::exec_cmd(command);
 }
 
 void	ScreenManager::mouse_position(int8 x, int8 y)

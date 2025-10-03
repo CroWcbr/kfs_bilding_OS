@@ -6,11 +6,14 @@ namespace crowos::common
 	namespace common
 	{
 
-		static uint8_t my_rand()
+		namespace
 		{
-			static unsigned int my_rand_seed = 42;
-			my_rand_seed = my_rand_seed * 1103515245  + 12345;
-			return my_rand_seed % 16;
+			uint8_t my_rand()
+			{
+				static uint32 my_rand_seed = 42;
+				my_rand_seed = my_rand_seed * 123456789  + 12345;
+				return my_rand_seed % 16;
+			}
 		}
 
 		void print_42()
@@ -26,7 +29,7 @@ namespace crowos::common
       ##  #########    ##    ## ##        ######  
 
 )";
-			for (int i = 0; kfs[i]; ++i)
+			for (uint32 i = 0; kfs[i]; ++i)
 			{
 				if (kfs[i] == ' ' || kfs[i] == '\n')
 					my_screen.putchar(kfs[i]);

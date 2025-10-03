@@ -1,10 +1,6 @@
 #ifndef __CROW__SHELL_H
 #define __CROW__SHELL_H
 
-#include <vga/screen.h>
-#include <common/types.h>
-#include <vga/screen.h>
-
 namespace crowos
 {
 	namespace shell
@@ -15,7 +11,7 @@ namespace crowos
         private:
 
         public:
-            static void exec_cmd(char *command, vga::Screen *my_screen);
+            static void exec_cmd(char *command);
         };
 
 	} // namespace shell

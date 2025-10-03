@@ -12,7 +12,7 @@ void Driver::Activate()
 
 }
 
-int Driver::Reset()
+int32 Driver::Reset()
 {
 	return 0;
 }

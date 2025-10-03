@@ -1,6 +1,8 @@
 #ifndef __CROWOS__DRIVER_H
 #define __CROWOS__DRIVER_H
 
+#include "common/types.h"
+
 namespace crowos
 {
 	namespace drivers
@@ -11,7 +13,7 @@ namespace crowos
 			Driver();
 
 			virtual void Activate();
-			virtual int Reset();
+			virtual int32 Reset();
 			virtual void Deactivate();
 		};
 
@@ -19,7 +21,7 @@ namespace crowos
 		{
 		private:
 			Driver *drivers[2]; // keyboard, mouse
-			int numDrivers;
+			int32 numDrivers;
 
 		public:
 			DriverManager();
